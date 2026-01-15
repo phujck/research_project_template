@@ -22,7 +22,11 @@ elseif ($Command -eq "sim-continuous") {
 elseif ($Command -eq "paper") {
     Push-Location manuscript/tex
     pdflatex -output-directory ../build main.tex
-    bibtex ../build/main
+    Pop-Location
+    Push-Location manuscript/build
+    bibtex main
+    Pop-Location
+    Push-Location manuscript/tex
     pdflatex -output-directory ../build main.tex
     pdflatex -output-directory ../build main.tex
     Pop-Location

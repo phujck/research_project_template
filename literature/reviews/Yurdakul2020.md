@@ -1,0 +1,18 @@
+---
+citekey: "Yurdakul2020"
+title: "A Distributionally Robust Optimization Approach for Unit Commitment in Microgrids"
+authors: ['Ogun Yurdakul', 'Fikret Sivrikaya', 'Sahin Albayrak']
+year: 2020
+venue: "arXiv"
+status: "Inbox"
+tags: []
+---
+
+# Abstract
+This paper proposes a distributionally robust unit commitment approach for microgrids under net load and electricity market price uncertainty. The key thrust of the proposed approach is to leverage the Kullback-Leibler divergence to construct an ambiguity set of probability distributions and formulate an optimization problem that minimizes the expected costs brought about by the worst-case distribution in the ambiguity set. The proposed approach effectively exploits historical data and capitalizes on the k-means clustering algorithm, in conjunction with the soft dynamic time warping score, to form the nominal probability distribution and its associated support. A two-level decomposition method is developed to enable the efficient solution of the devised problem. We carry out representative studies and quantify the relative merits of the proposed approach vis-à-vis a stochastic optimization-based model under different divergence tolerance values.
+
+# key Findings
+(To be filled)
+
+# Methodology
+(To be filled)

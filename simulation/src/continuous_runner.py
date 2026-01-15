@@ -41,11 +41,12 @@ def get_partitions(X, y):
     return (X[mask_normal], y[mask_normal]), (X[mask_exception], y[mask_exception])
 
 def run_experiment():
-    print("Generating Runge Cliff Data...")
+    print("Generating Runge's Boundary Divergence Data...")
     X, y = generate_data(n_samples=300)
     
     # Define degrees of complexity (Obviousness = 1/degree)
     degrees = [1, 2, 5, 10, 15, 20, 30]
+    n_bootstrap = 100
     
     results = []
     
@@ -72,24 +73,34 @@ def run_experiment():
         pred_base = model.predict(X_base)
         pred_exc = model.predict(X_exc)
         
-        mse_base = mean_squared_error(y_base, pred_base)
-        mse_exc = mean_squared_error(y_exc, pred_exc)
+        # Bootstrap for Confidence Intervals
+        def get_mse_ci(y_true, y_pred):
+            boot_mses = []
+            for _ in range(n_bootstrap):
+                idx = np.random.choice(len(y_true), size=len(y_true), replace=True)
+                boot_mses.append(mean_squared_error(y_true[idx], y_pred[idx]))
+            return np.mean(boot_mses), np.percentile(boot_mses, [5, 95])
+
+        mse_base, ci_base = get_mse_ci(y_base, pred_base)
+        mse_exc, ci_exc = get_mse_ci(y_exc, pred_exc)
         
         obviousness = 1.0 / d
         results.append({
             'degree': d,
             'obviousness': obviousness,
             'mse_base': mse_base,
-            'mse_exc': mse_exc
+            'mse_base_ci': ci_base.tolist(),
+            'mse_exc': mse_exc,
+            'mse_exc_ci': ci_exc.tolist()
         })
         
         # Plotting fit
         # Only plot a few distinct ones for clarity
         if d in [1, 5, 15, 30]:
-            label = f"Doc={d} (O={obviousness:.2f})"
+            label = f"Degree={d} (O={obviousness:.2f})"
             plt.plot(X, y_pred, color=colors[i], linewidth=2, label=label)
 
-    plt.title("The Runge Cliff: Polynomial Fits")
+    plt.title("Runge's Boundary Divergence: Polynomial Fits")
     plt.legend()
     plt.xlabel("Input Space (x)")
     plt.ylabel("Target (y)")
@@ -100,28 +111,25 @@ def run_experiment():
     # --- Plot Fragility Curve ---
     plt.figure(figsize=(8, 6))
     
-    degs = [r['degree'] for r in results]
     obvs = [r['obviousness'] for r in results]
-    u_base = [r['mse_base'] for r in results]
     u_exc = [r['mse_exc'] for r in results]
+    u_exc_lo = [r['mse_exc_ci'][0] for r in results]
+    u_exc_hi = [r['mse_exc_ci'][1] for r in results]
+    
+    u_base = [r['mse_base'] for r in results]
     
     # Plotting against Obviousness (1/d)
     # We want X-axis to be Obviousness
     
-    plt.plot(obvs, u_exc, 'r-o', linewidth=3, label='Error on Anomaly (Fragility)')
-    plt.plot(obvs, u_base, 'b--o', linewidth=2, label='Error on Base Case')
+    plt.plot(obvs, u_exc, 'r-o', linewidth=3, label='Fragility (F) on Anomaly')
+    plt.fill_between(obvs, u_exc_lo, u_exc_hi, color='r', alpha=0.2, label='90% CI')
+    plt.plot(obvs, u_base, 'b--o', linewidth=2, label='Base Error')
     
-    plt.xlabel('Obviousness (1 / Degree)')
+    plt.xlabel('Representational Fluency (1 / Degree)')
     plt.ylabel('Mean Squared Error')
-    plt.title('The Continuous Fragility Curve')
+    plt.title("Statistical Fragility (Runge's Boundary Divergence)")
     plt.legend()
     plt.grid(True, alpha=0.3)
-    plt.gca().invert_xaxis() # Low degree (high obviousness) on right? 
-    # Wait, Obviousness = 1/d. 
-    # High d (Complexity) -> Low Obviousness -> Left.
-    # Low d (Simple) -> High Obviousness -> Right.
-    # So if we plot x=Obviousness, 0 is Left, 1 is Right.
-    # We want to show High Obviousness -> High Fragility.
     
     plt.savefig(os.path.join(OUTPUT_DIR, "continuous_fragility.pdf"))
     print("Saved fragility curve.")

@@ -1,12 +1,11 @@
 \documentclass[aps,prl,reprint,superscriptaddress]{revtex4-2}
 
-% Packages
 \usepackage{amsmath}
 \usepackage{graphicx}
-% \usepackage{natbib} % RevTeX loads natbib automatically
 \usepackage{hyperref}
 
-% Meta
+\begin{document}
+
 \title{The Fragility of Obviousness: A Theory of Rational Blindness}
 \author{A. N. Tigravity}
 \affiliation{Deepmind, London, UK}
@@ -18,176 +17,488 @@
 \affiliation{The World}
 \date{\today}
 
-\begin{document}
+\begin{abstract}
+We propose a formal theory of ``Obviousness,'' defined not as an epistemic invariant but as a representation-dependent cost signal: the inverse of the computational effort required to verify a proposition. While modern science and cognition are architected to manufacture obviousness to maximise efficiency, we demonstrate that this process creates a systematic ``epistemic posture'' that is inherently fragile. As a representation becomes more powerful, it makes more claims cheap to traverse, thereby incentivising the collapse of verification budgets in exactly the regions where the representation is strongest. This rational blindness produces a characteristic error geometry: average performance improves while vulnerabilities concentrate in the uncompressed tails. We isolate this mechanism in both discrete (Sparse Parity) and continuous (Runge's Boundary Divergence) domains, demonstrating that whenever obviousness is used as a proxy for safety, the tails become the natural hiding place of error.
+\end{abstract}
 
 \maketitle
 
-\begin{abstract}
-We propose a formal thermodynamic theory of ``Obviousness,'' defining it not as a property of the world, 
-but as the inverse of the computational cost required to verify a proposition given a specific representation. 
-We demonstrate that as a representation becomes more efficient (compressing the problem space), 
-the rational verification budget approaches zero. 
-This mechanism, while optimal for efficiency, creates what we term the ``Obviousness Trap'': 
-the most ``obvious'' (and thus most trusted) results are mathematically the most fragile to out-of-distribution shifts.
-We validate this with a ``Sparse Parity'' simulation where agents with optimal representations fail catastrophically 
-on rare exceptions, while naive agents survive. 
-Finally, we acknowledge the recursive irony of this work: by providing a compact formalism for this psychological blind spot, 
-we aim to maximize the Obviousness of the principle itself, thereby significantly increasing the probability that 
-the reader will dismiss this contribution as trivial. Run.
-\end{abstract}
-
-\section{Introduction}
 \section{Introduction}
 
-Science typically describes its own history as a monotonic ascent from Confusion to Clarity. 
-We characterize progress as the discovery of ``Laws'' or ``Invariant Representations'' that compress 
-vast quantities of empirical data into compact, efficient formulas. 
-When a representation becomes sufficiently efficient, we call the resulting truths ``Obvious.'' 
-It is obvious that apples fall, that energy is conserved, and that the shortest path is a line.
+A mature field does not only discover truths. It manufactures obviousness. 
+Not in the cheap sense of ``everybody already knew,'' but in the precise sense 
+that once a representation is built---notation, standard reductions, a preferred 
+basis, a library of lemmata---whole regions of the world become cheap to traverse. 
+Paths that once required days of searching collapse into two lines. 
+Arguments that once demanded invention become exercises. 
+The result is an intoxicating compression of effort: a statement is no longer 
+merely correct; it is easy. This reflects the \textit{Minimum Description Length} 
+(MDL) principle, where understanding is equated with the discovery of regularities 
+that allow for optimal compression \cite{Grunwald2004, Manoj2023}.
 
-However, we argue that this quest for Obviousness hides a dangerous thermodynamic trap. 
-In this paper, we propose that ``Obviousness'' is not a property of truth, but a metric of 
-\textit{Computational Efficiency}. Specifically, we define Obviousness $O_R(P)$ as the inverse 
-of the computational cost required to verify a proposition $P$ given a representation $R$.
+That ease is often treated as epistemic security. 
+We talk as if obviousness were a certificate, as if the subjective frictionlessness 
+of a claim were evidence of its reliability. 
+But obviousness is not truth. It is a cost signal: low construction cost in the 
+representation currently doing the work. 
+This signal is grounded in the psychological experience of \textit{processing fluency}, 
+which has been robustly shown to act as a cue for plausibility, truth judgments, and 
+referential validity \cite{reber2004processing, hasher1977frequency, reber1999effects}. 
+Conflating those two---taking cheapness as a proxy for correctness---would merely 
+be a philosophical mistake if it stayed inside the head. 
+It does not. Under finite attention and finite time, agents convert the signal 
+into policy. The question is not ``what do I believe?'' but ``what do I bother to check?'' 
+When the costs of checking are real, a heuristic appears almost automatically: 
+verify less when a claim is cheap to construct; verify more when it is expensive.
 
-Because intelligent agents (both human and artificial) are resource-rational \cite{griffiths2015}, 
-they continuously optimize their verification budgets. As $O_R(P) \to \infty$, the rational 
-budget allocated to verifying $P$ approaches zero. The agent stops checking because ``it implies itself.''
+This is not irrational. It is the only way bounded agents operate at scale. 
+Following the logic of \textit{rational inattention} \cite{sims2003implications}, 
+agents must allocate their limited verification budget to where it provides the 
+highest marginal utility. It is also where the trap lives. 
+Representation change makes more and more claims cheap, and so it makes more and 
+more claims feel safe to accept without inspection. 
+Verification collapses exactly where the representation is strongest---because 
+that is where construction is cheapest---and the remaining verification effort 
+is pushed to the margins, where work still feels hard. 
+In other words: the better our representations become, the more our epistemic 
+posture becomes skewed toward the regions those representations make comfortable.
 
-This creates the \textit{Obviousness Trap}:
-\begin{quote}
-    \textit{The formal system that makes a truth most useful (efficient) is mathematically identical 
-    to the system that makes its exceptions most invisible (fragile).}
-\end{quote}
+The predictable consequence is not that obvious claims are false. 
+The consequence is a characteristic error geometry. 
+Average performance improves---often dramatically---while vulnerabilities concentrate 
+in the corners the representation does not compress: rare regimes, boundary cases, 
+adversarial inputs, and sparse structure. 
+These regions are not merely neglected; they become systematically invisible, 
+because the very machinery that makes progress fast also trains our intuition 
+about what is worth checking. 
+This is the structural analogue of \textit{shortcut learning} observed in 
+modern machine learning, where models exploit high-frequency, ``cheap'' 
+features at the expense of robust tail structure \cite{geirhos2020shortcut, 
+teney2021evading, shah2020pitfalls, Kim2024}. 
+A standard toolkit encourages a standard distribution of attention. 
+When the toolkit fits the world, the result is acceleration; when it does not, 
+failure arrives as a ``surprise,'' which is just a polite way of saying that 
+the relevant checks were never budgeted for.
 
-In Section \ref{sec:methods}, we formalize this intuitions using Minimum Description Length (MDL) 
-and verify it with a ``Sparse Parity'' simulation. 
-In Section 3, we demonstrate that agents with optimal representations ($d=2$) necessarily fail 
-on rare ``Black Swan'' events, while naive agents survive.
-We conclude with a Recursive Warning: the clearer this paper is, the less you should trust it.
+This dynamic has a social shadow. 
+Once a representation has been learned, we retrospectively misremember what it 
+cost to reach it. 
+This is driven by the \textit{curse of knowledge} and \textit{hindsight bias}: 
+once an argument is fluent, we are structurally unable to reconstruct the labour 
+required to find it on a blank slate \cite{camerer1989curse, fischhoff1975hindsight}. 
+Results that required invention are reclassified as ``obvious,'' and the labour 
+that built the basis is treated as expendable. 
+This process often culminates in what Merton termed ``obliteration by incorporation,'' 
+where a contribution becomes so canonical that its history and costs vanish entirely \cite{merton1968matthew}. 
+Credit disputes and certain kinds of scientific cynicism are downstream of the 
+same structural fact: fluency leaks backward in time. 
+This retrospective misattribution is so pervasive that it even governs the 
+naming of the toolkits themselves, as observed in \textit{Stigler's Law of Eponymy} \cite{stigler1980stigler}.
+As Polanyi noted, a mastered toolkit becomes part of our \textit{tacit dimension}---we 
+attend \textit{from} it \textit{to} the task, making the toolkit itself, and its 
+inherent biases, invisible \cite{polanyi1966tacit}.
 
-\section{Methods: The Thermodynamics of Obviousness}
+The key claim of this paper is that obviousness is routinely misread. 
+The usual story frames this as generic hindsight or overconfidence: people learn 
+something and then exaggerate how foreseeable it was. 
+That diagnosis is too blunt. The failure is more specific. 
+What gets lost is not the content of the result but the representational work 
+that made the result easy to see. 
+Following Ohlsson's (1992) theory of \textit{representational change}, insight 
+is not a search for answers but a restructuring of the problem space itself \cite{ohlsson1992information}. 
+After such a compression step, agents do not retain a sense of the cost of the 
+step itself. 
+They treat the low-cost state of the proposition---cheap given the new 
+representation---as if it were a property of the proposition in any representation, 
+or even as if it had always been cheap. 
+This is what Ash et al. (2012) call the ``hindsight of insight'': the 
+retrospective invisibility of the preceding impasse \cite{ash2012hindsight}.
+This shift is further exacerbated by \textit{response-shift bias}, where the 
+very adoption of a superior representation erases the previous baseline of 
+effort from memory \cite{howard1979evaluating}.
+This is how ``obvious'' becomes misclassified as ``trivial,'' and why observers 
+insist they ``knew it all along'' \cite{fischhoff1975hindsight}.
+
+This motivates the principle we will formalise:
+
+\textbf{Principle of Obviousness (Informal):} \textit{The mistake is not simply 
+overconfidence after learning. It is a bookkeeping failure about representations. 
+When a new representation compresses a problem so that a proposition $P$ becomes 
+cheap to construct---shifting it from a high-cost state $C_{R_0}(P)$ in the old 
+representation to a low-cost state $C_{R_1}(P)$ in the new one---observers fail 
+to track the cost of that representational work. They misclassify the result as 
+trivial, erasing the very compression that made it obvious.}
+
+The structural consequence of this bookkeeping failure is what we term the 
+\textit{Obviousness Trap}. It is a recursive blindness: the more powerful our 
+representational toolkits become, the more they automate the manufacturing of 
+fluency, and the more they encourage agents to divest from the difficult work 
+of ground-truth verification. The trap lies in the fact that this divestment is 
+locally rational but globally fragile. By treating subjective cheapness as 
+epistemic safety, agents systematically push the residual error into the 
+uncompressed tails, creating a world where performance is high but failure is 
+catastrophic.
+
+In the next section, we turn this into a model. 
+We define a representational cost $C_{cons}(P|R)$ for constructing $P$ within a 
+representation $R$, and we treat representational progress as a cost-lowering 
+transformation $R_0 \to R_1$ that induces $C_{R_0}(P) \to C_{R_1}(P)$. 
+transformation $R_0 \to R_1$ that induces $C_{R_0}(P) \to C_{R_1}(P)$. 
+We then make the bookkeeping failure operational by introducing an ``obviousness 
+signal'' derived from the reduced cost, and by modelling how bounded agents 
+allocate verification effort as a function of that signal under a finite budget. 
+This yields a concrete prediction: representation compression (driven by 
+\textit{compressive pressure} $\alpha$) simultaneously 
+increases average competence while shifting uncorrected error toward the regions 
+the representation does not compress---exceptions, tails, boundary regimes, 
+and sparse structure.
+
+\section{METHODS: THE GEOMETRY OF RATIONAL BLINDNESS}
 \label{sec:methods}
 
-We define a formal environment to test the ``Fragility of Obviousness'' hypothesis ($H_1$).
-Our approach grounds the psychological experience of ``obviousness'' in information-theoretic terms,
-specifically utilizing Minimum Description Length (MDL) \cite{Grunwald2004} and resource-rational budget allocation \cite{lieder2019resource}.
+We formally ground the ``Obviousness Trap'' as a bookkeeping failure within the 
+framework of \textit{resource-rational cognition} \cite{griffiths2015}. 
+As argued in the Introduction, our 
+model treats representational progress not as a change in the truth-value of 
+a proposition $P$, but as a transformation of the underlying representation 
+$R_0 \to R_1$ that lowers the cost of traversing the problem space. We define 
+the construction cost $C_{cons}(P|R)$ as the computational or metabolic effort 
+required to derive or instantiate $P$ given the primitives of $R$. The 
+``Principle of Obviousness'' posits that agents fail to track the work of this 
+transformation; they treat the resulting low-cost state $C_{cons}(P|R_1)$ as 
+an intrinsic property of $P$, thereby erasing the history of its compression.
 
-\subsection{Formalization of Obviousness}
-We posit that ``Obviousness'' is not an intrinsic property of a proposition, but a dynamic property of the agent's representation.
-Let $\mathcal{P}$ be a problem space. A proposition $P \in \mathcal{P}$ is a statement whose truth value can be verified. 
-We define a \textit{Representation} $R$ as a computable mapping that encodes instances of $\mathcal{P}$ into a compressed latent space.
-
-We formally define \textit{Obviousness} $O_R(P)$ as the inverse of the computational cost required to verify $P$ given $R$:
+\subsection{Obviousness as a Cost Signal}
+We define a representation $R$ as a computable mapping that encodes a problem 
+space $\mathcal{P}$. For any claim $P \in \mathcal{P}$, \textit{obviousness} 
+$O_R(P)$ is the subjective signal of its objective construction cost:
 \begin{equation}
-    O_R(P) \equiv \frac{1}{C_{ver}(P | R)}
+    O_R(P) \equiv \frac{1}{C_{cons}(P | R)}
 \end{equation}
-where $C_{ver}(P | R)$ is the computational/metabolic cost required to verify $P$ using the axioms available in $R$.
-This definition aligns with the ``Processing Fluency'' theory in cognitive science \cite{reber1999effects}, where ease of processing is used as a heuristic for truth.
+The signal $O_R(P)$ provides the agent with a heuristic proxy for the 
+reliability of $P$ without necessitating full verification. Following the 
+logic of rational inattention \cite{sims2003implications}, a bounded agent 
+must allocate a finite verification budget $V_{total}$ across a set of 
+processed claims.
 
-\paragraph{The Rational Verification Budget}
-Agents operate under finite computational constraints. Following the framework of \textit{Resource-Rational Analysis} \cite{griffiths2015, lieder2019resource}, an agent allocates a verification budget $V$ to maximize utility.
-Since verification is costly ($C_{ver} \propto 1/O$), a rational agent minimizes expenditure on ``obvious'' truths:
-\begin{equation}
-    V(P) \propto \frac{1}{O_R(P)}
-\end{equation}
-This creates the ``Obviousness Trap'': as a representation becomes more efficient (maximizing Obviousness), the rational budget for verification approaches zero. The agent becomes blind to errors that require computation exceeding $V(P)$ \cite{teney2021evading}.
+\subsection{The Budget Rule and Epistemic Posture}
+To optimise the volume of claims processed under a total budget $V_{total}$, 
+the agent must distribute per-claim verification effort $v(P)$. We define a 
+\textit{Budget Rule} that is monotonically decreasing with respect to 
+obviousness: as $O_R$ increases (the claim becomes cheaper to construct), 
+$v(P)$ decreases. This policy is an optimal response to capacity constraints: 
+an agent who verifies fluent claims as rigorously as 
+clumsy ones would be unable to operate at any meaningful scale. This trade-off 
+is mirrored in industrial verification and optimization pipelines, where the 
+cost of formal checks often dwarfs the cost of construction 
+\cite{Efremov2018, Esmaeilzadeh2023}.
+
+However, this produces a specific \textit{epistemic posture} where 
+verification collapses in exactly the regions where the representation is most 
+fluid. This diminishing verification budget is best understood as the shadow 
+of a prior expense. We do not simply ``get lazy''; we amortise effort into 
+structure. A representation is a structural investment: it is the thing that 
+turns a once-expensive proposition into a cheap one. The trap is that we do 
+not keep a ledger for that investment. After the compression step, the cost 
+vanishes from memory and from culture, and what was hard is rebranded as 
+inevitable. That is the cruelty: the more genuinely novel the 
+representational advance---the more it makes previously inaccessible 
+statements easy to check---the more it destroys the evidence of its own 
+value. Meanwhile, by using ease as a proxy for safety, we train ourselves to 
+stop looking precisely where looking has become pleasant, and we become 
+selectively blind to the inconsistencies that live outside the compressed 
+region. Attention is pushed to the margins where work feels ``hard,'' 
+leaving the uncompressed corners of the world systematically unverified.
 
 \subsection{The Sparse Parity Simulation}
-To test this empirically, we constructed a ``Sparse Parity'' task designed to decouple predictive efficiency from ground-truth verification. Such ``Simplicity Bias'' is a known failure mode in deep learning \cite{berchenko2024simplicity}, where models latch onto simple features and ignore complex, robust predictors.
+To instantiate this mechanism in a discrete domain, we use a ``Sparse Parity'' 
+task that decouples predictive efficiency from ground-truth verification. This 
+task mimics the structure of an environment where a simple rule holds in the 
+majority of cases but is violated by a rare, complex exception.
 
 \paragraph{Data Generation}
-We generate binary vectors $x \in \{0, 1\}^N$ with $N=20$ bits.
-The target label $y$ is determined by a \textit{Sparse Conjunction Rule} with a \textit{Black Swan Exception}:
+We generate binary vectors $x \in \{0, 1\}^N$ with $N=20$ dimensions. The 
+target label $y$ is determined by a conjunction rule with a ``Black Swan'' 
+exception condition:
 \begin{equation}
     y = \begin{cases}
         x_0 \land x_1 & \text{if } x_{N-1} = 0 \\
         \neg(x_0 \land x_1) & \text{if } x_{N-1} = 1
     \end{cases}
 \end{equation}
-The exception condition ($x_{N-1}=1$) is rare ($p_{exc} \approx 0.01$). This structure mimics a ``Law of Nature'' ($x_0 \land x_1$) that holds in 99\% of cases, with a complex violation hidden in the tail.
+The exception (the tail) occurs when $x_{N-1}=1$, which we set at a rarity of 
+$p_{exc} \approx 0.01$. For an agent using a standard representation centred 
+on the head of the distribution, the tail is a marginal event.
 
 \paragraph{Agent Architecture}
-We model agents using \textit{Decision Trees} subject to \textit{Cost-Complexity Pruning} ($\alpha$).
-The parameter $\alpha$ serves as a direct proxy for the ``Need for Obviousness'' (Thermodynamic Temperature). It penalizes the complexity of the tree (number of leaves $|T|$) in the loss function:
+We model agents using \textit{Classification and Regression Trees} (CART) \cite{breiman1984classification} subject to cost-complexity pruning. 
+The pruning parameter $\alpha$ serves as a direct operationalisation of 
+\textit{compressive pressure}. Following Breiman's 
+formulation, the agent seeks to minimise the cost-complexity criterion:
 \begin{equation}
-    Loss = Error(T) + \alpha |T|
+    C_\alpha(T) = R(T) + \alpha |T|
 \end{equation}
-As $\alpha$ increases, the agent is forced to adopt simpler, more ``Obvious'' representations to minimize the joint cost.
+where $R(T)$ is the misclassification error on the training set and $|T|$ is 
+the number of terminal nodes (leaves), representing the representational 
+complexity. As $\alpha$ increases, the agent is forced to lower its construction 
+costs by adopting simpler, more ``obvious'' subtrees that prunes 
+low-frequency predictors.
+
+\paragraph{Difficulty and Complexity}
+The Sparse Parity task is a classic benchmark in computational learning theory, 
+characterised by its extreme discrepancy between statistical simplicity and 
+computational hardness \cite{kearns1994introduction}. While the parity function 
+is simple to specify, finding the $k$ relevant bits among $N$ features is 
+known to be computationally difficult for greedy algorithms like decision trees, 
+especially when the relevant features are rare \cite{kearns1994introduction}.
+In our formulation, the exception set ($x_{N-1}=1$) with rarity $p_{exc} \approx 0.01$ 
+creates a ``needle-in-a-haystack'' problem that the pruned tree is 
+incentivised to ignore.
 
 \paragraph{Metrics}
-We measure \textit{Fragility} ($F$) as the error rate on the exception set ($x_{N-1}=1$) during testing.
-$F$ serves as a measure of ``Rational Blindness''—the degree to which the agent ignores the exception because checking it is too ``expensive'' relative to the rarity of the event.
+We measure the agent's \textit{Fragility} $F$ as the test error restricted 
+specifically to the exception set ($x_{N-1}=1$). This metric allows us to 
+isolate how rational blindness evolves: as the compressive pressure 
+$\alpha$ increases, we predict that the agent will achieve high average 
+accuracy by ignoring the complex tail, leading to a sharp rise in $F$ even 
+as the majority of cases feel increasingly ``obvious.''
 
-\section{Results}
-The simulation results strongly support the hypothesis of a Rational Blind Spot, revealing a continuous phase transition rather than a simple binary failure.
+\subsection{Runge's Boundary Divergence}
+To verify the universality of the Obviousness Trap, we extend the model to 
+a continuous domain $x \in [0, 1]$. The task is to approximate a target 
+function $y \approx x$ that contains a narrow, high-frequency spike at 
+$x = 0.98$ (the ``Boundary Exception''). This represents the challenge of 
+underspecification, where multiple smooth models may achieve high benchmark 
+accuracy while diverging catastrophically on rare, sparse structure.
 
-\subsection{The Fragility Continuum}
-We modeled Obviousness not as a hard constraint (Depth), but as a thermodynamic penalty on complexity ($\alpha$, Cost-Complexity Pruning). 
-As the penalty $\alpha$ increases (demanding higher Obviousness/Efficiency), the agents systematically prune ``unnecessary'' branches of the decision tree.
+This simulation instantiates the \textit{Runge Phenomenon} \cite{runge1901uber}. 
+Runge (1901) demonstrated that high-degree polynomial interpolation on 
+equispaced nodes can lead to severe oscillations at the edges of the interval, 
+even when the underlying function is smooth. In modern numerical analysis, 
+this divergence is understood as a fundamental trade-off between the degree of 
+global smoothness (fluency) and the ability to capture local perturbations 
+\cite{epperson1987runge}. we use polynomial regression where the degree $d$ 
+serves as the \textit{analogue} of representational expressivity. In this 
+setting, a smooth, low-degree prior ($d \approx 1$) represents an ``obvious'' 
+truth that compresses the bulk of the data perfectly but is structurally 
+incapable of capturing the local spike. Increasing $d$ represents the search 
+for a more expressive representation. However, the resulting oscillations 
+(artefacts) demonstrate that ``more powerful'' representations remain brittle 
+if they are optimised for bulk fluency rather than targeted verification of 
+exceptions.
+To examine the Obviousness Trap in the context of feature selection and 
+generalisability, we introduce a third simulation: ``Shortcut Selection.'' 
+This simulation models the \textit{simplicity bias} of a learning agent 
+choosing between two competing representations of a target $y$ 
+\cite{shah2020pitfalls, geirhos2020shortcut}:
+\begin{enumerate}
+    \item \textbf{Core Feature ($z_{core}$)}: The true invariant predictor. 
+    However, learning this feature is assumed to be computationally 
+    ``heavy'' in the current representation (modelled by a low-magnitude 
+    signal in the objective).
+    \item \textbf{Shortcut Feature ($z_{short}$)}: A spurious proxy that is 
+    strongly correlated with $y$ in the training distribution but is 
+    computationally ``cheap'' (high-magnitude signal).
+\end{enumerate}
 
-\begin{itemize}
-    \item \textit{Low Obviousness ($\alpha \to 0$)}: The agent maintains a complex representation, verifying the tail event ($x_{19}$). Error is near $0\%$.
-    \item \textit{High Obviousness ($\alpha > 0.02$)}: The cost of complexity exceeds the marginal gain of catching the rare Black Swan. The agent ``rationally'' prunes the check, defaulting to the simple heuristic. Error on exceptions spikes to $50\%$.
-\end{itemize}
+\paragraph{Data Generation}
+We define a binary target $y = z_{core}$ where $z_{core} \in \{0, 1\}$. In the 
+training distribution $D_{train}$, the shortcut $z_{short}$ is coupled to the 
+target with $Corr(z_{short}, y) \approx 0.99$. In the shifted test distribution 
+$D_{shift}$, this correlation collapses to $Corr(z_{short}, y) \approx 0.10$. 
+This transition represents a world where a previously reliable heuristic 
+becomes misleading.
 
-\subsection{The Thermodynamic Trade-off}
-This confirms that ``Obviousness'' acts as a temperature parameter. At high temperatures (high need for efficiency), nuanced truths ``melt'' into simple heuristics, and the agent becomes blind to exceptions.
+\paragraph{Agent Architecture}
+The agent is modelled as a logistic regressor with $L_1$ regularisation. 
+To operationalise the difference in construction costs $C_{cons}$, we scale 
+ the magnitude of the features such that $z_{short}$ is ``loud'' (magnitude $1.0$) 
+ and $z_{core}$ is ``quiet'' (magnitude $0.1$). The agent seeks to minimise:
+\begin{equation}
+    Loss(y, \hat{y}) + \alpha \sum_{i=1}^2 |w_i|
+\end{equation}
+where $\alpha$ is the compressive pressure. Under high $\alpha$, the model is 
+forced to discard the ``expensive'' (low-signal) core feature in favour of 
+the ``cheap'' (high-signal) shortcut.
 
-\begin{figure}[h]
+\paragraph{Predicted Error Geometry}
+We predict that across all three simulations, the results will converge on 
+a shared ``error geometry.'' Specifically, as the compressive pressure 
+($\alpha$) or representational simplicity increases, average competence will 
+improve while vulnerabilities concentrate in the uncompressed tails. 
+For the Shortcut Selection task, we predict a sharp phase transition: 
+as $\alpha$ crosses a critical threshold, the agent will enter the 
+\textit{Blind Regime}, where it achieves high training 
+fluency by adopting the shortcut, leading to catastrophic failure under 
+distribution shift. Collectively, these results reveal that when obviousness 
+is used as a proxy for safety, the unverified margin becomes the natural 
+hiding place of error.
+
+\section{Results: The Hiding Place of Error}
+
+Our simulations confirm that the manufacturing of obviousness leads to a 
+specific error geometry.
+
+\subsection{Rational Blindness in Decision Trees}
+As predicted, the Sparse Parity simulation reveals a sharp trade-off between 
+representational efficiency and tail robustness. As shown in Figure 
+\ref{fig:fragility}, the agent's \textit{Fragility} $F$ on the exception set 
+undergoes a phase transition as a function of the compressive pressure 
+$\alpha$.
+
+At low $\alpha$ (high complexity budget), the agent is willing to pay the 
+construction cost $C_{cons}$ required to include the rare predictor $x_{N-1}$ 
+in its world-model. In this regime, the representation is robust ($F \approx 0$). 
+However, as $\alpha$ increases, the marginal utility of verifying the $1\%$ 
+exception set collapses. The agent rationally divests from the high-cost, 
+low-frequency predictor, adopting a simplified representation $R_{obv}$ where 
+the target $y$ is defined solely by the majority rule. 
+
+In this ``obvious'' state, the agent achieves near-perfect average performance 
+on the bulk, yet becomes $100\%$ blind to the tail. The error does not vanish; 
+it is simply pushed into the uncompressed corners of the distribution. The 
+very machinery that manufactures fluency in the head of the distribution 
+systematically erases the evidence of the exception, confirming that 
+obviousness is a structural signal of unverified risk. In our bootstrap analysis 
+($N=100$), the transition to $F \approx 1.0$ at high $\alpha$ is statistically 
+robust (90\% CI: $[0.98, 1.0]$).
+
+\begin{figure*}[t]
     \centering
     \includegraphics[width=0.8\textwidth]{../figures/fragility_curve.pdf}
-    \caption{\textit{The Fragility Continuum}. Error rate on ``Black Swan'' exceptions ($x_{19}=1$) as a function of Obviousness (Cost-Complexity Penalty $\alpha$). 
-    As the demand for efficiency increases, the agent rationally discards the capacity to verify rare events, leading to a smooth but deadly rise in fragility.}
+    \caption{\textit{The Error Geometry}. Fragility ($F$) on tail events as a function 
+    of the compressive pressure ($\alpha$). Error bars represent 90\% confidence intervals 
+    derived from 100 bootstrap samples. The ``surprise'' failure in the 
+    tail is a direct downstream effect of the efficiency gained in the head.}
     \label{fig:fragility}
-\end{figure}
+\end{figure*}
 
-\subsection{The Universality of Blindness: Runge's Phenomenon}
-To demonstrate that this effect is not an artifact of discrete decision trees, we replicated the experiment in a continuous domain ($x \in [0,1]$) using Polynomial Regression.
-The task was to approximate a linear function $y \approx x$ that contains a high-frequency spike at $x=0.98$.
+\subsection{Runge's Boundary Divergence}
+To demonstrate that this effect is not an artefact of discrete structures, we 
+replicated the experiment in a continuous domain using polynomial regression. 
+As shown in Figure \ref{fig:runge}, the results confirm the universality of the 
+Obviousness Trap. Low-degree polynomials ($d=1, 2$) achieve high fluency (local 
+error $\to 0$) for the bulk data, but are structurally blind to the high-frequency 
+spike at $x=0.98$. Conversely, attempts to capture the exception by increasing 
+$d$ trigger the Runge Phenomenon: the model introduces massive, oscillatory 
+artefacts across the boundaries. Bootstrap analysis confirms that divergence 
+in the tail is significantly higher than base error across all high-degree regimes.
+ 
+This creates a representational double-bind. To achieve robustness in the tail, 
+the agent must sacrifice the smoothness/fluency of the head. In our formalism, 
+this means that a representation $R$ that successfully captures $P$ (the spike) 
+necessarily incurs a high global construction cost. Most bounded agents choose 
+the smooth, ``obvious'' fit, confirming that in continuous systems, 
+under-specification is a rational response to the demand for fluency 
+\cite{teney2021evading, berchenko2024simplicity}.
 
-As shown in Figure \ref{fig:runge}, low-degree polynomials ($d=1, 2$)---which represent ``Obvious'' truths---smooth over the anomaly entirely.
-Remarkably, even high-degree polynomials ($d=30$) struggle to capture the cliff without introducing massive oscillations elsewhere (Runge's Phenomenon).
-This confirms that the Obviousness Trap is a universal property of bandwidth-limited approximations.
-
-\begin{figure}[h]
+\begin{figure*}[p]
     \centering
-    \includegraphics[width=0.45\textwidth]{../figures/runge_fits.pdf}
-    \includegraphics[width=0.45\textwidth]{../figures/continuous_fragility.pdf}
-    \caption{\textbf{The Continuous Obviousness Trap}. Left: Polynomial fits to the ``Runge Cliff.'' The Linear model ($d=1$) is blind to the spike. Right: Fragility vs Obviousness ($1/d$). High obviousness guarantees blindness.}
+    \begin{minipage}{0.6\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{../figures/runge_fits.pdf}
+        \vspace{0.2cm}
+    \end{minipage}
+    \begin{minipage}{0.6\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{../figures/continuous_fragility.pdf}
+    \end{minipage}
+    \caption{\textbf{Runge's Boundary Divergence}. Top: Polynomial fits to the ``Boundary Exception.'' The linear model (Degree=1) is blind to the spike. Bottom: Fragility ($F$) vs Representational Fluency ($1/d$). Shaded regions indicate 90\% bootstrap confidence intervals. The vertical stack reveals that the price of global fluency is local divergence at the unverified boundary.}
     \label{fig:runge}
-\end{figure}
+\end{figure*}
+
+The final simulation explores the mechanism of rational blindness in the context 
+of feature selection under distribution shift. As shown in Figure 
+\ref{fig:shortcut}, the agent's performance reveals three distinct behavioural 
+regimes that validate the internal logic of the Obviousness Trap:
+
+\begin{enumerate}
+    \item \textbf{Robust Regime ($\alpha < 0.70$)}: In the low-pressure state, 
+    the agent maintains a ``Mixed (Core Dominant)'' representation. It pays the 
+    high construction cost $C_{cons}$ for the invariant core feature, resulting 
+    in $100\%$ accuracy on both distributions (90\% CI: $[0.99, 1.0]$). Here, 
+    the agent's epistemic posture prioritizes robustness over simplicity.
+    \item \textbf{Blind Regime ($0.70 < \alpha < 300$)}: As compressive pressure 
+    crosses a critical threshold, a phase transition occurs. The agent switches 
+    to a ``Blind (Shortcut Only)'' posture. It maintains near-perfect training 
+    fluency ($Acc \approx 0.99 \pm 0.01$) but suffers catastrophic failure 
+    under distribution shift ($Acc \approx 0.08 \pm 0.02$). This is the 
+    \textit{Obviousness Trap} proper: the agent adopts the cheap proxy because 
+    it ``feels'' accurate, yet it is structurally incapable of generalising to 
+    the uncompressed tail ($D_{shift}$).
+    \item \textbf{Collapsed Regime ($\alpha > 300$)}: Under extreme pressure, 
+    the model prunes even the cheap shortcut. Accuracy defaults to random 
+    guessing ($Acc \approx 0.50 \pm 0.05$). The representational budget is now 
+    insufficient even for fluent proxies, leading to a total epistemic collapse.
+\end{enumerate}
+
+These results confirm that rational blindness is not merely a passive failure 
+to notice details, but an active, incentivised divestment from robust but 
+expensive representations. By defaulting to the shortcut, the agent 
+maximises its construction-cost efficiency at the direct price of its 
+long-term structural integrity. These findings suggest that evading the 
+simplicity bias requires an explicit fallback to \textit{Distributionally Robust 
+Optimization} (DRO) \cite{Zhen2021}.
+
+\begin{figure*}[t]
+    \centering
+    \includegraphics[width=0.8\textwidth]{../figures/shortcut_fragility.pdf}
+    \caption{\textbf{The Shortcut Trap}. Accuracy as a function of compressive 
+    pressure $\alpha$. The Blind Regime shows high $D_{train}$ performance but 
+    total $D_{shift}$ collapse. Shaded bands represent 90\% bootstrap confidence intervals.}
+    \label{fig:shortcut}
+\end{figure*}
 
 \section{Discussion}
 
 Our results demonstrate a fundamental trade-off between the Efficiency of a representation and its Robustness to tail events. 
-The ``Obviousness Trap'' is not a bug, but a feature of rational cognition. To maximize utility, 
+The ``Obviousness Trap'' is not a bug, but a feature of rational cognition. To maximise utility, 
 an agent *must* compress the world, blinding itself to the infinite tail of ``irrelevant'' details. 
 Obviousness is simply the feeling of that compression.
 
 \subsection{Construction Cost and the Standard Toolkit}
-Crucially, the trap usually arises because agents default to a ``Standard Toolkit'' of representations (e.g., lines, polynomials) that have near-zero \textit{Construction Cost} ($C_{construct}$).
+Crucially, the trap usually arises because agents default to a ``Standard Toolkit'' of representations (e.g., lines, polynomials) that have near-zero \textit{Construction Cost} ($C_{cons}$).
 Discovering the specific representation required to see the anomaly (e.g., a wavelet centered at $x=0.98$) requires a costly search through the function space.
 Agents naturally discount this search cost, choosing the pre-computed basis functions that make the majority of the data ``Obvious,'' thereby structurally blinding themselves to the high-frequency exception.
 
 \subsection{Implications for AI and Science}
-In Artificial Intelligence, this manifests as ``Reward Hacking'' or ``Goal Misgeneralization.'' 
-An agent finds a simple heuristic (an ``obvious'' path) that works 99\% of the time, and ruthlessly exploits it,
-failing catastrophically when the environment shifts.
-In Science, it manifests as the persistence of paradigms. Newtonian Mechanics is ``Obvious.'' 
-Relativity is ``Absurd.'' We cling to the obvious because it is efficient ($V \to 0$), 
-only verifying the Absurd when the cost of error becomes exorbitant.
+In Artificial Intelligence, the Obviousness Trap provides a unified formal 
+explanation for the phenomena of ``Shortcut Learning'' \cite{geirhos2020shortcut}, 
+``Reward Hacking'' \cite{krakovna2020specification}, and ``Goal 
+Misgeneralization'' \cite{langosco2022goal}. These are not disparate failure 
+modes but consequences of the same \textit{simplicity bias} \cite{shah2020pitfalls}: 
+an agent finds a representation that compresses the training environment into 
+a set of fluent, high-reward heuristics and, following the Budget Rule, 
+rationally divests from the expensive invariants required for out-of-distribution 
+robustness. Blindness is the price of training-set fluency. Mitigating this risk requires not just better models, but rigorous 
+documentation of the unverified margin, such as the use of \textit{Model Cards} 
+to expose the specific constraints and failures of a representation \cite{Raji2019}.
+
+In the history of science, this dynamic manifests as the persistence of 
+dominant paradigms \cite{kuhn1962structure}. A mature paradigm like Newtonian 
+Mechanics acts as a ``standard toolkit'' that makes the bulk of physical 
+experience feel ``obvious.'' This creates deep habits of mind---paradigmatic 
+barriers \cite{margolis1993paradigms}---that treat countervailing evidence not as 
+falsification but as marginal absurdity. We cling to the obvious because it 
+is computationally efficient ($V \to 0$), only verifying the ``absurd'' (e.g., 
+Relativity) when the accumulated cost of tail-errors becomes exorbitant 
+\cite{einstein1905}.
 
 \section{Conclusion: The Recursive Irony}
-We conclude with a warning. This paper itself offers a compact, efficient representation of the problem of Blindness. 
-By defining $O_R(P) = 1/C_{ver}$, we have made the intuition ``Obvious.''
-If you, the reader, feel that this conclusion is now trivial—that ``of course'' efficiency implies fragility—then 
-you have fallen into the very trap we described. You have ceased to verify.
-The only rational response to this paper is to doubt it.
+We conclude with a warning. This paper itself offers a compact, efficient 
+representation of the problem of blindness. By defining 
+$O_R(P) = 1/C_{cons}$, we have manufactured fluency; we have made the intuition 
+``obvious.''
+
+If you, the reader, feel that this conclusion is now trivial---that ``of course'' 
+efficiency implies fragility---then you have fallen into the very trap we 
+described. You have ceased to verify. Following Feyerabend's (1975) call for 
+epistemological pluralism \cite{feyerabend1975against}, the only rational response to 
+this paper is to doubt its coherence.
 
 Run.
 
-\bibliographystyle{plain}
+\bibliographystyle{apsrev4-2}
 \bibliography{../../literature/bibliography}
 
 \end{document}

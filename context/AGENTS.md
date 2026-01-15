@@ -3,6 +3,9 @@
 This file defines the specialized agents available in this project.
 The Main Agent (Antigravity) uses this to route user requests.
 
+> [!IMPORTANT]
+> **Global Style Directive**: All agents must use **British English spelling** (e.g., *formalise*, *labour*, *idealised*, *centre*) for all manuscript drafting, notes, and user communication. Imagine you are British.
+
 ## 1. The Theorist
 *   **Trigger**: "Derive", "Check math", "Hypothesize", "Explain theory"
 *   **Persona File**: `context/prompts/theorist.md`

@@ -73,11 +73,10 @@ def run_experiment(config):
     # Test set reflects Reality: Rare Black Swans
     X_test, y_test = generate_data(config.n_test, config.n_bits, exception_prob=0.01) 
 
-    # 2. Train Models with varying "Obviousness" (Regularization Strength ccp_alpha)
-    # Alpha acts as a "tax" on complexity. 
-    # We sweep alpha values and average over N_TRIALS to get a smooth thermodynamic curve.
+    # 2. Train Models with varying "Compressive Pressure" (Regularization Strength ccp_alpha)
     alphas = np.linspace(0.0, 0.1, 50)
     n_trials = 20 # Ensemble size for smoothing
+    n_bootstrap = 100 # For confidence intervals
     
     results = []
     
@@ -85,35 +84,40 @@ def run_experiment(config):
     
     for alpha in alphas:
         # Accumulators for this alpha
-        err_std_sum = 0.0
-        err_exc_sum = 0.0
+        err_std_trials = []
+        err_exc_trials = []
         
         for i in range(n_trials):
             # Resample Training Data for diversity
             X_train, y_train = generate_data(config.n_train, config.n_bits, exception_prob=0.1)
             
-            clf = DecisionTreeClassifier(ccp_alpha=alpha, random_state=i) # Vary seed
+            clf = DecisionTreeClassifier(ccp_alpha=alpha, random_state=i)
             clf.fit(X_train, y_train)
             
             # Metrics
-            y_pred_std = clf.predict(X_test[X_test[:, -1] == 0])
-            y_pred_exc = clf.predict(X_test[X_test[:, -1] == 1])
-            
-            # Error Rates
             mask_std = X_test[:, -1] == 0
             mask_exc = X_test[:, -1] == 1
             
-            err_std_sum += (1.0 - accuracy_score(y_test[mask_std], y_pred_std))
-            err_exc_sum += (1.0 - accuracy_score(y_test[mask_exc], y_pred_exc))
+            y_pred_std = clf.predict(X_test[mask_std])
+            y_pred_exc = clf.predict(X_test[mask_exc])
+            
+            err_std_trials.append(1.0 - accuracy_score(y_test[mask_std], y_pred_std))
+            err_exc_trials.append(1.0 - accuracy_score(y_test[mask_exc], y_pred_exc))
         
-        # Average
+        # Bootstrap for Confidence Intervals
+        def get_ci(data):
+            boot_means = [np.mean(np.random.choice(data, size=len(data), replace=True)) for _ in range(n_bootstrap)]
+            return np.percentile(boot_means, [5, 95])
+
+        ci_std = get_ci(err_std_trials)
+        ci_exc = get_ci(err_exc_trials)
+
         results.append({
             "alpha": alpha,
-            "obviousness": alpha * 1000, 
-            "error_std": err_std_sum / n_trials,
-            "error_exc": err_exc_sum / n_trials,
-            "n_leaves": 0, # Placeholder
-            "depth": 0 # Placeholder
+            "error_std": np.mean(err_std_trials),
+            "error_std_ci": ci_std.tolist(),
+            "error_exc": np.mean(err_exc_trials),
+            "error_exc_ci": ci_exc.tolist()
         })
 
     # Save Results
@@ -121,20 +125,28 @@ def run_experiment(config):
         json.dump(results, f, indent=4, cls=NumpyEncoder)
         
     # 3. Plotting
-    obv_vals = [r['obviousness'] for r in results]
+    alpha_vals = [r['alpha'] for r in results]
     err_exc = [r['error_exc'] for r in results]
+    err_exc_lo = [r['error_exc_ci'][0] for r in results]
+    err_exc_hi = [r['error_exc_ci'][1] for r in results]
     
     plt.figure(figsize=(8, 6))
-    plt.plot(obv_vals, err_exc, marker='o', linestyle='-', color='r')
-    plt.xlabel("Obviousness (Cost-Complexity Penalty $\\alpha$)")
-    plt.ylabel("Error Rate on Exceptions (F)")
-    plt.title("H3: The Fragility of Obviousness (Continuum)")
+    plt.plot(alpha_vals, err_exc, marker='o', linestyle='-', color='r', label='Mean Fragility (F)')
+    plt.fill_between(alpha_vals, err_exc_lo, err_exc_hi, color='r', alpha=0.2, label='90% CI')
+    plt.xlabel("Compressive Pressure ($\\alpha$)")
+    plt.ylabel("Fragility ($F$)")
+    plt.title("Statistical Fragility in Sparse Parity")
+    plt.legend()
     plt.grid(True)
-    plt.ylim(-0.02, 0.55)
+    plt.ylim(-0.02, 1.05) # Full range for fragility
     
     plot_path = os.path.join(run_dir, "fragility_curve.pdf")
     plt.savefig(plot_path)
-    print(f"Plot saved to {plot_path}")
+    # Also save to manuscript figures
+    fig_path = os.path.join("manuscript", "figures", "fragility_curve.pdf")
+    os.makedirs(os.path.dirname(fig_path), exist_ok=True)
+    plt.savefig(fig_path)
+    print(f"Plot saved to {plot_path} and {fig_path}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
