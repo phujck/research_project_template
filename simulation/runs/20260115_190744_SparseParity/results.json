@@ -1,0 +1,44 @@
+[
+    {
+        "max_depth": 2,
+        "obviousness": 6.666666666666667,
+        "error_std": 0.48991935483870963,
+        "error_exc": 0.5138888888888888,
+        "features_used": 3
+    },
+    {
+        "max_depth": 3,
+        "obviousness": 2.857142857142857,
+        "error_std": 0.5181451612903225,
+        "error_exc": 0.4662698412698413,
+        "features_used": 7
+    },
+    {
+        "max_depth": 4,
+        "obviousness": 1.5384615384615385,
+        "error_std": 0.5423387096774194,
+        "error_exc": 0.4722222222222222,
+        "features_used": 13
+    },
+    {
+        "max_depth": 5,
+        "obviousness": 1.3333333333333333,
+        "error_std": 0.3084677419354839,
+        "error_exc": 0.5535714285714286,
+        "features_used": 15
+    },
+    {
+        "max_depth": 10,
+        "obviousness": 1.0,
+        "error_std": 0.13508064516129037,
+        "error_exc": 0.6388888888888888,
+        "features_used": 20
+    },
+    {
+        "max_depth": 20,
+        "obviousness": 1.0,
+        "error_std": 0.14717741935483875,
+        "error_exc": 0.6369047619047619,
+        "features_used": 20
+    }
+]

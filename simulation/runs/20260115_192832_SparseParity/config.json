@@ -1,0 +1,6 @@
+{
+    "n_bits": 20,
+    "n_train": 2000,
+    "n_test": 1000,
+    "exception_prob": 0.005
+}

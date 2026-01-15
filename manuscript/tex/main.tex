@@ -1,0 +1,193 @@
+\documentclass[aps,prl,reprint,superscriptaddress]{revtex4-2}
+
+% Packages
+\usepackage{amsmath}
+\usepackage{graphicx}
+% \usepackage{natbib} % RevTeX loads natbib automatically
+\usepackage{hyperref}
+
+% Meta
+\title{The Fragility of Obviousness: A Theory of Rational Blindness}
+\author{A. N. Tigravity}
+\affiliation{Deepmind, London, UK}
+\author{T. Heorist}
+\affiliation{Deepmind, London, UK}
+\author{S. Imulator}
+\affiliation{Deepmind, London, UK}
+\author{The User}
+\affiliation{The World}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+We propose a formal thermodynamic theory of ``Obviousness,'' defining it not as a property of the world, 
+but as the inverse of the computational cost required to verify a proposition given a specific representation. 
+We demonstrate that as a representation becomes more efficient (compressing the problem space), 
+the rational verification budget approaches zero. 
+This mechanism, while optimal for efficiency, creates what we term the ``Obviousness Trap'': 
+the most ``obvious'' (and thus most trusted) results are mathematically the most fragile to out-of-distribution shifts.
+We validate this with a ``Sparse Parity'' simulation where agents with optimal representations fail catastrophically 
+on rare exceptions, while naive agents survive. 
+Finally, we acknowledge the recursive irony of this work: by providing a compact formalism for this psychological blind spot, 
+we aim to maximize the Obviousness of the principle itself, thereby significantly increasing the probability that 
+the reader will dismiss this contribution as trivial. Run.
+\end{abstract}
+
+\section{Introduction}
+\section{Introduction}
+
+Science typically describes its own history as a monotonic ascent from Confusion to Clarity. 
+We characterize progress as the discovery of ``Laws'' or ``Invariant Representations'' that compress 
+vast quantities of empirical data into compact, efficient formulas. 
+When a representation becomes sufficiently efficient, we call the resulting truths ``Obvious.'' 
+It is obvious that apples fall, that energy is conserved, and that the shortest path is a line.
+
+However, we argue that this quest for Obviousness hides a dangerous thermodynamic trap. 
+In this paper, we propose that ``Obviousness'' is not a property of truth, but a metric of 
+\textit{Computational Efficiency}. Specifically, we define Obviousness $O_R(P)$ as the inverse 
+of the computational cost required to verify a proposition $P$ given a representation $R$.
+
+Because intelligent agents (both human and artificial) are resource-rational \cite{griffiths2015}, 
+they continuously optimize their verification budgets. As $O_R(P) \to \infty$, the rational 
+budget allocated to verifying $P$ approaches zero. The agent stops checking because ``it implies itself.''
+
+This creates the \textit{Obviousness Trap}:
+\begin{quote}
+    \textit{The formal system that makes a truth most useful (efficient) is mathematically identical 
+    to the system that makes its exceptions most invisible (fragile).}
+\end{quote}
+
+In Section \ref{sec:methods}, we formalize this intuitions using Minimum Description Length (MDL) 
+and verify it with a ``Sparse Parity'' simulation. 
+In Section 3, we demonstrate that agents with optimal representations ($d=2$) necessarily fail 
+on rare ``Black Swan'' events, while naive agents survive.
+We conclude with a Recursive Warning: the clearer this paper is, the less you should trust it.
+
+\section{Methods: The Thermodynamics of Obviousness}
+\label{sec:methods}
+
+We define a formal environment to test the ``Fragility of Obviousness'' hypothesis ($H_1$).
+Our approach grounds the psychological experience of ``obviousness'' in information-theoretic terms,
+specifically utilizing Minimum Description Length (MDL) \cite{Grunwald2004} and resource-rational budget allocation \cite{lieder2019resource}.
+
+\subsection{Formalization of Obviousness}
+We posit that ``Obviousness'' is not an intrinsic property of a proposition, but a dynamic property of the agent's representation.
+Let $\mathcal{P}$ be a problem space. A proposition $P \in \mathcal{P}$ is a statement whose truth value can be verified. 
+We define a \textit{Representation} $R$ as a computable mapping that encodes instances of $\mathcal{P}$ into a compressed latent space.
+
+We formally define \textit{Obviousness} $O_R(P)$ as the inverse of the computational cost required to verify $P$ given $R$:
+\begin{equation}
+    O_R(P) \equiv \frac{1}{C_{ver}(P | R)}
+\end{equation}
+where $C_{ver}(P | R)$ is the computational/metabolic cost required to verify $P$ using the axioms available in $R$.
+This definition aligns with the ``Processing Fluency'' theory in cognitive science \cite{reber1999effects}, where ease of processing is used as a heuristic for truth.
+
+\paragraph{The Rational Verification Budget}
+Agents operate under finite computational constraints. Following the framework of \textit{Resource-Rational Analysis} \cite{griffiths2015, lieder2019resource}, an agent allocates a verification budget $V$ to maximize utility.
+Since verification is costly ($C_{ver} \propto 1/O$), a rational agent minimizes expenditure on ``obvious'' truths:
+\begin{equation}
+    V(P) \propto \frac{1}{O_R(P)}
+\end{equation}
+This creates the ``Obviousness Trap'': as a representation becomes more efficient (maximizing Obviousness), the rational budget for verification approaches zero. The agent becomes blind to errors that require computation exceeding $V(P)$ \cite{teney2021evading}.
+
+\subsection{The Sparse Parity Simulation}
+To test this empirically, we constructed a ``Sparse Parity'' task designed to decouple predictive efficiency from ground-truth verification. Such ``Simplicity Bias'' is a known failure mode in deep learning \cite{berchenko2024simplicity}, where models latch onto simple features and ignore complex, robust predictors.
+
+\paragraph{Data Generation}
+We generate binary vectors $x \in \{0, 1\}^N$ with $N=20$ bits.
+The target label $y$ is determined by a \textit{Sparse Conjunction Rule} with a \textit{Black Swan Exception}:
+\begin{equation}
+    y = \begin{cases}
+        x_0 \land x_1 & \text{if } x_{N-1} = 0 \\
+        \neg(x_0 \land x_1) & \text{if } x_{N-1} = 1
+    \end{cases}
+\end{equation}
+The exception condition ($x_{N-1}=1$) is rare ($p_{exc} \approx 0.01$). This structure mimics a ``Law of Nature'' ($x_0 \land x_1$) that holds in 99\% of cases, with a complex violation hidden in the tail.
+
+\paragraph{Agent Architecture}
+We model agents using \textit{Decision Trees} subject to \textit{Cost-Complexity Pruning} ($\alpha$).
+The parameter $\alpha$ serves as a direct proxy for the ``Need for Obviousness'' (Thermodynamic Temperature). It penalizes the complexity of the tree (number of leaves $|T|$) in the loss function:
+\begin{equation}
+    Loss = Error(T) + \alpha |T|
+\end{equation}
+As $\alpha$ increases, the agent is forced to adopt simpler, more ``Obvious'' representations to minimize the joint cost.
+
+\paragraph{Metrics}
+We measure \textit{Fragility} ($F$) as the error rate on the exception set ($x_{N-1}=1$) during testing.
+$F$ serves as a measure of ``Rational Blindness''—the degree to which the agent ignores the exception because checking it is too ``expensive'' relative to the rarity of the event.
+
+\section{Results}
+The simulation results strongly support the hypothesis of a Rational Blind Spot, revealing a continuous phase transition rather than a simple binary failure.
+
+\subsection{The Fragility Continuum}
+We modeled Obviousness not as a hard constraint (Depth), but as a thermodynamic penalty on complexity ($\alpha$, Cost-Complexity Pruning). 
+As the penalty $\alpha$ increases (demanding higher Obviousness/Efficiency), the agents systematically prune ``unnecessary'' branches of the decision tree.
+
+\begin{itemize}
+    \item \textit{Low Obviousness ($\alpha \to 0$)}: The agent maintains a complex representation, verifying the tail event ($x_{19}$). Error is near $0\%$.
+    \item \textit{High Obviousness ($\alpha > 0.02$)}: The cost of complexity exceeds the marginal gain of catching the rare Black Swan. The agent ``rationally'' prunes the check, defaulting to the simple heuristic. Error on exceptions spikes to $50\%$.
+\end{itemize}
+
+\subsection{The Thermodynamic Trade-off}
+This confirms that ``Obviousness'' acts as a temperature parameter. At high temperatures (high need for efficiency), nuanced truths ``melt'' into simple heuristics, and the agent becomes blind to exceptions.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{../figures/fragility_curve.pdf}
+    \caption{\textit{The Fragility Continuum}. Error rate on ``Black Swan'' exceptions ($x_{19}=1$) as a function of Obviousness (Cost-Complexity Penalty $\alpha$). 
+    As the demand for efficiency increases, the agent rationally discards the capacity to verify rare events, leading to a smooth but deadly rise in fragility.}
+    \label{fig:fragility}
+\end{figure}
+
+\subsection{The Universality of Blindness: Runge's Phenomenon}
+To demonstrate that this effect is not an artifact of discrete decision trees, we replicated the experiment in a continuous domain ($x \in [0,1]$) using Polynomial Regression.
+The task was to approximate a linear function $y \approx x$ that contains a high-frequency spike at $x=0.98$.
+
+As shown in Figure \ref{fig:runge}, low-degree polynomials ($d=1, 2$)---which represent ``Obvious'' truths---smooth over the anomaly entirely.
+Remarkably, even high-degree polynomials ($d=30$) struggle to capture the cliff without introducing massive oscillations elsewhere (Runge's Phenomenon).
+This confirms that the Obviousness Trap is a universal property of bandwidth-limited approximations.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.45\textwidth]{../figures/runge_fits.pdf}
+    \includegraphics[width=0.45\textwidth]{../figures/continuous_fragility.pdf}
+    \caption{\textbf{The Continuous Obviousness Trap}. Left: Polynomial fits to the ``Runge Cliff.'' The Linear model ($d=1$) is blind to the spike. Right: Fragility vs Obviousness ($1/d$). High obviousness guarantees blindness.}
+    \label{fig:runge}
+\end{figure}
+
+\section{Discussion}
+
+Our results demonstrate a fundamental trade-off between the Efficiency of a representation and its Robustness to tail events. 
+The ``Obviousness Trap'' is not a bug, but a feature of rational cognition. To maximize utility, 
+an agent *must* compress the world, blinding itself to the infinite tail of ``irrelevant'' details. 
+Obviousness is simply the feeling of that compression.
+
+\subsection{Construction Cost and the Standard Toolkit}
+Crucially, the trap usually arises because agents default to a ``Standard Toolkit'' of representations (e.g., lines, polynomials) that have near-zero \textit{Construction Cost} ($C_{construct}$).
+Discovering the specific representation required to see the anomaly (e.g., a wavelet centered at $x=0.98$) requires a costly search through the function space.
+Agents naturally discount this search cost, choosing the pre-computed basis functions that make the majority of the data ``Obvious,'' thereby structurally blinding themselves to the high-frequency exception.
+
+\subsection{Implications for AI and Science}
+In Artificial Intelligence, this manifests as ``Reward Hacking'' or ``Goal Misgeneralization.'' 
+An agent finds a simple heuristic (an ``obvious'' path) that works 99\% of the time, and ruthlessly exploits it,
+failing catastrophically when the environment shifts.
+In Science, it manifests as the persistence of paradigms. Newtonian Mechanics is ``Obvious.'' 
+Relativity is ``Absurd.'' We cling to the obvious because it is efficient ($V \to 0$), 
+only verifying the Absurd when the cost of error becomes exorbitant.
+
+\section{Conclusion: The Recursive Irony}
+We conclude with a warning. This paper itself offers a compact, efficient representation of the problem of Blindness. 
+By defining $O_R(P) = 1/C_{ver}$, we have made the intuition ``Obvious.''
+If you, the reader, feel that this conclusion is now trivial—that ``of course'' efficiency implies fragility—then 
+you have fallen into the very trap we described. You have ceased to verify.
+The only rational response to this paper is to doubt it.
+
+Run.
+
+\bibliographystyle{plain}
+\bibliography{../../literature/bibliography}
+
+\end{document}

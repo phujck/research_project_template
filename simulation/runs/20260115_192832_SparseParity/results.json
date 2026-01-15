@@ -1,0 +1,44 @@
+[
+    {
+        "max_depth": 2,
+        "obviousness": 6.666666666666667,
+        "error_std": 0.0,
+        "error_exc": 0.483495145631068,
+        "features_used": 3
+    },
+    {
+        "max_depth": 3,
+        "obviousness": 6.666666666666667,
+        "error_std": 0.0,
+        "error_exc": 0.0,
+        "features_used": 3
+    },
+    {
+        "max_depth": 4,
+        "obviousness": 6.666666666666667,
+        "error_std": 0.0,
+        "error_exc": 0.0,
+        "features_used": 3
+    },
+    {
+        "max_depth": 5,
+        "obviousness": 6.666666666666667,
+        "error_std": 0.0,
+        "error_exc": 0.0,
+        "features_used": 3
+    },
+    {
+        "max_depth": 10,
+        "obviousness": 6.666666666666667,
+        "error_std": 0.0,
+        "error_exc": 0.0,
+        "features_used": 3
+    },
+    {
+        "max_depth": 20,
+        "obviousness": 6.666666666666667,
+        "error_std": 0.0,
+        "error_exc": 0.0,
+        "features_used": 3
+    }
+]

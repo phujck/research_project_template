@@ -1,0 +1,22 @@
+# LaTeX Build Artifacts
+manuscript/build/
+manuscript/build_v2/
+*.aux
+*.log
+*.out
+*.toc
+*.fls
+*.fdb_latexmk
+*.bbl
+*.blg
+*.synctex.gz
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+simulation/results/
+
+# Editor
+.vscode/
+*.swp
