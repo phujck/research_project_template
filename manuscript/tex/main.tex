@@ -363,15 +363,15 @@ obviousness is a structural signal of unverified risk. In our bootstrap analysis
 ($N=100$), the transition to $F \approx 1.0$ at high $\alpha$ is statistically 
 robust (90\% CI: $[0.98, 1.0]$).
 
-\begin{figure*}[t]
+\begin{figure}[ht]
     \centering
-    \includegraphics[width=0.8\textwidth]{../figures/fragility_curve.pdf}
+    \includegraphics[width=\columnwidth]{../figures/fragility_curve.pdf}
     \caption{\textit{The Error Geometry}. Fragility ($F$) on tail events as a function 
     of the compressive pressure ($\alpha$). Error bars represent 90\% confidence intervals 
     derived from 100 bootstrap samples. The ``surprise'' failure in the 
     tail is a direct downstream effect of the efficiency gained in the head.}
     \label{fig:fragility}
-\end{figure*}
+\end{figure}
 
 \subsection{Runge's Boundary Divergence}
 To demonstrate that this effect is not an artefact of discrete structures, we 
@@ -392,20 +392,14 @@ the smooth, ``obvious'' fit, confirming that in continuous systems,
 under-specification is a rational response to the demand for fluency 
 \cite{teney2021evading, berchenko2024simplicity}.
 
-\begin{figure*}[p]
+\begin{figure}[ht]
     \centering
-    \begin{minipage}{0.6\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{../figures/runge_fits.pdf}
-        \vspace{0.2cm}
-    \end{minipage}
-    \begin{minipage}{0.6\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{../figures/continuous_fragility.pdf}
-    \end{minipage}
+    \includegraphics[width=\columnwidth]{../figures/runge_fits.pdf}
+    \vspace{0.2cm}
+    \includegraphics[width=\columnwidth]{../figures/continuous_fragility.pdf}
     \caption{\textbf{Runge's Boundary Divergence}. Top: Polynomial fits to the ``Boundary Exception.'' The linear model (Degree=1) is blind to the spike. Bottom: Fragility ($F$) vs Representational Fluency ($1/d$). Shaded regions indicate 90\% bootstrap confidence intervals. The vertical stack reveals that the price of global fluency is local divergence at the unverified boundary.}
     \label{fig:runge}
-\end{figure*}
+\end{figure}
 
 The final simulation explores the mechanism of rational blindness in the context 
 of feature selection under distribution shift. As shown in Figure 
@@ -440,14 +434,14 @@ long-term structural integrity. These findings suggest that evading the
 simplicity bias requires an explicit fallback to \textit{Distributionally Robust 
 Optimization} (DRO) \cite{Zhen2021}.
 
-\begin{figure*}[t]
+\begin{figure}[ht]
     \centering
-    \includegraphics[width=0.8\textwidth]{../figures/shortcut_fragility.pdf}
+    \includegraphics[width=\columnwidth]{../figures/shortcut_fragility.pdf}
     \caption{\textbf{The Shortcut Trap}. Accuracy as a function of compressive 
     pressure $\alpha$. The Blind Regime shows high $D_{train}$ performance but 
     total $D_{shift}$ collapse. Shaded bands represent 90\% bootstrap confidence intervals.}
     \label{fig:shortcut}
-\end{figure*}
+\end{figure}
 
 \section{Discussion}
 
