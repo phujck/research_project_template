@@ -445,40 +445,133 @@ Optimization} (DRO) \cite{Zhen2021}.
 
 \section{Discussion}
 
-Our results demonstrate a fundamental trade-off between the Efficiency of a representation and its Robustness to tail events. 
-The ``Obviousness Trap'' is not a bug, but a feature of rational cognition. To maximise utility, 
-an agent *must* compress the world, blinding itself to the infinite tail of ``irrelevant'' details. 
-Obviousness is simply the feeling of that compression.
+A familiar psychological effect sits at the centre of this paper: once a 
+representation is learned, fluency leaks backward 
+\cite{fischhoff1975hindsight, ash2012hindsight}. We experience a claim as 
+``obvious,'' misremember it as having been easy all along, and under-allocate 
+scrutiny precisely where the current framework runs smoothly. In machine 
+learning, the same geometry appears under different names---shortcut learning 
+\cite{geirhos2020shortcut}, underspecification \cite{d'amour2022underspecification}, 
+and brittle generalisation under shift---where models achieve high average 
+performance by exploiting low-cost structure that evaluation fails to pressure-test. 
+Our contribution is to treat these as instances of a single mechanism: 
+representational compression lowers construction cost, and under a finite 
+budget \cite{sims2003implications}, that cheapness is converted into a posture of 
+diminished verification, pushing error into the uncompressed tails.
 
-\subsection{Construction Cost and the Standard Toolkit}
-Crucially, the trap usually arises because agents default to a ``Standard Toolkit'' of representations (e.g., lines, polynomials) that have near-zero \textit{Construction Cost} ($C_{cons}$).
-Discovering the specific representation required to see the anomaly (e.g., a wavelet centered at $x=0.98$) requires a costly search through the function space.
-Agents naturally discount this search cost, choosing the pre-computed basis functions that make the majority of the data ``Obvious,'' thereby structurally blinding themselves to the high-frequency exception.
+\subsection{Structural investment and the erased ledger}
 
-\subsection{Implications for AI and Science}
-In Artificial Intelligence, the Obviousness Trap provides a unified formal 
-explanation for the phenomena of ``Shortcut Learning'' \cite{geirhos2020shortcut}, 
-``Reward Hacking'' \cite{krakovna2020specification}, and ``Goal 
-Misgeneralization'' \cite{langosco2022goal}. These are not disparate failure 
-modes but consequences of the same \textit{simplicity bias} \cite{shah2020pitfalls}: 
-an agent finds a representation that compresses the training environment into 
-a set of fluent, high-reward heuristics and, following the Budget Rule, 
-rationally divests from the expensive invariants required for out-of-distribution 
-robustness. Blindness is the price of training-set fluency. Mitigating this risk requires not just better models, but rigorous 
-documentation of the unverified margin, such as the use of \textit{Model Cards} 
-to expose the specific constraints and failures of a representation \cite{Raji2019}.
+The shrinking verification budget is not an independent behavioural quirk. It is 
+the downstream effect of structural investment in representation. When a field, 
+or an agent, builds a new representation, it is not merely adopting a different 
+vocabulary: it is reshaping the cost landscape. Propositions that previously sat 
+at a high construction cost $C_{R_0}(P)$ are moved into a low-cost regime 
+$C_{R_1}(P)$. This is productive novelty in its most concrete form---making 
+previously prohibitive checks routine.
 
-In the history of science, this dynamic manifests as the persistence of 
-dominant paradigms \cite{kuhn1962structure}. A mature paradigm like Newtonian 
-Mechanics acts as a ``standard toolkit'' that makes the bulk of physical 
-experience feel ``obvious.'' This creates deep habits of mind---paradigmatic 
-barriers \cite{margolis1993paradigms}---that treat countervailing evidence not as 
-falsification but as marginal absurdity. We cling to the obvious because it 
-is computationally efficient ($V \to 0$), only verifying the ``absurd'' (e.g., 
-Relativity) when the accumulated cost of tail-errors becomes exorbitant 
-\cite{einstein1905}.
+The cruelty is that this investment tends to erase its own evidence. Once 
+$C_{R_1}(P)$ is in place, the cost of the compression step drops out of the 
+ledger \cite{hasher1977frequency}. Cheapness is misattributed to the proposition 
+itself (``it was always obvious''), and the representational work that produced 
+the cheapness is reclassified as trivial or inevitable. This is not only a story 
+about credit \cite{merton1968matthew}. It is also the mechanism by which the 
+budget rule tightens: when the local experience of cheap traversal is treated 
+as a proxy for safety, scrutiny collapses where the representation is most fluent.
+
+\subsection{Construction cost and the standard toolkit}
+
+In practice, the trap is strengthened by what might be called the \textit{standard 
+toolkit effect}. Agents default to representations with negligible startup 
+cost---canonical bases, standard approximations, inherited intuitions---because 
+these are precompiled by culture, libraries, and habit. The result is that 
+``obvious'' becomes synonymous with ``expressible in the toolkit.'' Discovering 
+the representation required to expose an anomaly, by contrast, is itself 
+expensive: it requires a search through representation space. Under scarcity, 
+that search is discounted, and the agent settles for the basis that makes the 
+bulk cheap, even if it makes the decisive exception effectively invisible.
+
+This is precisely what our simulations illustrate in different guises. In 
+Sparse Parity, compressive pressure makes the exception structure economically 
+irrational to represent; error concentrates on the rare set. In Runge's 
+Boundary Divergence, a smooth, low-degree representation is cheap and therefore 
+preferred, but it must smear or ignore a narrow spike; increasing degree 
+can recover local detail but also introduces global oscillatory artefacts without 
+targeted representational choice. In both cases, the mechanism is not 
+``poor learning,'' but cheap traversal driving reduced attention to what is 
+expensive to represent.
+
+\subsection{Connection to modern machine learning}
+
+Read as machine learning, the \textit{Obviousness Trap} is the structural analogue 
+of shortcut learning \cite{geirhos2020shortcut}. When a low-cost feature map 
+captures the bulk of the label signal in a training distribution, optimisation 
+will find it because it is cheap. What is expensive is the robust structure: 
+invariances that reveal themselves only under shift, in rare subpopulations, or 
+in adversarial regimes. Standard evaluation acts as a weak surrogate for 
+verification: it pressure-tests performance primarily on typical draws from the 
+training distribution. Under that regime, models become competent in the bulk 
+and fragile in the corners.
+
+The same geometry underlies underspecification \cite{d'amour2022underspecification}. 
+Many internal hypotheses are equally consistent with the bulk of data; the 
+evaluation environment fails to select among them; deployment reveals which 
+distinctions were never tested. From the present viewpoint, this is not a 
+separate pathology but a predictable consequence of treating representational 
+cheapness as a proxy for safety: the regions where the representation compresses 
+most efficiently become the regions where scrutiny is least informative and 
+least applied.
+
+\subsection{Hallucination as low-cost, non-verified structure}
+
+The framework also gives a clean handle on hallucination. A hallucination is 
+not best thought of as ``randomness,'' but as low-cost structure emitted 
+without the cost of coupling to an external constraint. In a generative model, 
+there is constant pressure to produce continuations that are cheap in the internal 
+representation: fluent, coherent, strongly supported by priors. Fluency is 
+exactly the cost signal identified by the theory. When external verification is 
+expensive or absent---no grounded retrieval, no cross-check, no coupling to a 
+second representation---cheap internal objects are emitted as if they were safe.
+
+This explains why hallucinations are often well-formed. Coherence is cheap. 
+What is expensive is fidelity to the contingent, high-friction details of the 
+world. Under a budget rule that treats cheapness as a reason to stop checking, 
+the expensive constraints are the first to be dropped. Hallucination is then not 
+an anomaly of the model; it is the natural output of an obviousness engine 
+run without a verification channel.
+
+\subsection{The mono-representation problem}
+
+The trap is not specific to a particular algorithm, nor even to human psychology. 
+It is endemic to any regime in which a single representational lens dominates---any 
+system in which ``what it means for something to make sense'' is largely 
+exhausted by ``what is cheap in the prevailing code.'' In that regime, 
+obviousness becomes self-certifying: internal fluency is mistaken for adequacy, 
+and verification becomes mere self-consistency inside the same lens. Tails are 
+then defined not only by rarity in the world but by clumsiness in the 
+representation: they are the regions the lens itself discourages you from 
+inhabiting.
+
+\subsection{Coupling inequivalent representations by mutual consistency}
+
+This suggests a structural antidote: not more cleverness inside the same 
+representation, but coupling between inequivalent representations. If obviousness 
+is representation-dependent, then a natural replacement for ``verification against 
+the world'' is ``survival under translation.'' Different representations make 
+different structures cheap and possess different blind spots. By demanding 
+mutual consistency---that a claim remain stable when expressed in a genuinely 
+different representational basis---one can force scrutiny back into precisely 
+the places where any single representation would least like to pay it.
+
+Operationally: maintain an ensemble of structurally distinct representations 
+$R^{(1)}, R^{(2)}, \dots$, and treat disagreement under translation as an explicit 
+signal that the representational ledger is incomplete---some assumption has been 
+smuggled in, some tail regime has not been tested, or some cost has been hidden 
+by a convenient basis. This does not eliminate the need for external grounding, 
+but it can prevent obviousness in one lens from becoming unquestionable in 
+all lenses.
 
 \section{Conclusion: The Recursive Irony}
+
 We conclude with a warning. This paper itself offers a compact, efficient 
 representation of the problem of blindness. By defining 
 $O_R(P) = 1/C_{cons}$, we have manufactured fluency; we have made the intuition 
@@ -487,8 +580,8 @@ $O_R(P) = 1/C_{cons}$, we have manufactured fluency; we have made the intuition
 If you, the reader, feel that this conclusion is now trivial---that ``of course'' 
 efficiency implies fragility---then you have fallen into the very trap we 
 described. You have ceased to verify. Following Feyerabend's (1975) call for 
-epistemological pluralism \cite{feyerabend1975against}, the only rational response to 
-this paper is to doubt its coherence.
+epistemological pluralism \cite{feyerabend1975against}, the only rational 
+response to this paper is to doubt its coherence.
 
 Run.
 
