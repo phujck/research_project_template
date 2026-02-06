@@ -18,7 +18,7 @@
 \date{\today}
 
 \begin{abstract}
-We propose a formal theory of ``Obviousness,'' defined not as an epistemic invariant but as a representation-dependent cost signal: the inverse of the computational effort required to verify a proposition. While modern science and cognition are architected to manufacture obviousness to maximise efficiency, we demonstrate that this process creates a systematic ``epistemic posture'' that is inherently fragile. As a representation becomes more powerful, it makes more claims cheap to traverse, thereby incentivising the collapse of verification budgets in exactly the regions where the representation is strongest. This rational blindness produces a characteristic error geometry: average performance improves while vulnerabilities concentrate in the uncompressed tails. We isolate this mechanism in both discrete (Sparse Parity) and continuous (Runge's Boundary Divergence) domains, demonstrating that whenever obviousness is used as a proxy for safety, the tails become the natural hiding place of error.
+We propose a formal theory of ``Obviousness,'' defined not as an epistemic invariant but as a representation-dependent cost signal: the inverse of the computational effort required to construct a proposition. While modern science and cognition are architected to manufacture obviousness to maximise efficiency, we demonstrate that this process creates a systematic ``epistemic posture'' that is inherently fragile. As a representation becomes more powerful, it makes more claims cheap to construct, thereby incentivising the collapse of verification budgets in exactly the regions where the representation is strongest. This rational blindness produces a characteristic error geometry: average performance improves while vulnerabilities concentrate in the uncompressed tails. We isolate this mechanism across three domains: discrete classification (Sparse Parity), continuous approximation (Runge's Boundary Divergence), and feature selection under distribution shift (Shortcut Selection), demonstrating that whenever obviousness is used as a proxy for safety, the tails become the natural hiding place of error.
 \end{abstract}
 
 \maketitle
@@ -26,9 +26,10 @@ We propose a formal theory of ``Obviousness,'' defined not as an epistemic invar
 \section{Introduction}
 
 A mature field does not only discover truths. It manufactures obviousness. 
-Not in the cheap sense of ``everybody already knew,'' but in the precise sense 
-that once a representation is built---notation, standard reductions, a preferred 
-basis, a library of lemmata---whole regions of the world become cheap to traverse. 
+Not in the cheap sense of ``everybody already knew,'' but in the precise 
+sense that once a representation is built - notation, standard reductions, 
+a preferred basis, a library of lemmata - whole regions of the world become 
+cheap to traverse. 
 Paths that once required days of searching collapse into two lines. 
 Arguments that once demanded invention become exercises. 
 The result is an intoxicating compression of effort: a statement is no longer 
@@ -44,7 +45,8 @@ representation currently doing the work.
 This signal is grounded in the psychological experience of \textit{processing fluency}, 
 which has been robustly shown to act as a cue for plausibility, truth judgments, and 
 referential validity \cite{reber2004processing, hasher1977frequency, reber1999effects}. 
-Conflating those two---taking cheapness as a proxy for correctness---would merely 
+Conflating those two - taking cheapness as a proxy for correctness - would 
+merely 
 be a philosophical mistake if it stayed inside the head. 
 It does not. Under finite attention and finite time, agents convert the signal 
 into policy. The question is not ``what do I believe?'' but ``what do I bother to check?'' 
@@ -57,15 +59,17 @@ agents must allocate their limited verification budget to where it provides the
 highest marginal utility. It is also where the trap lives. 
 Representation change makes more and more claims cheap, and so it makes more and 
 more claims feel safe to accept without inspection. 
-Verification collapses exactly where the representation is strongest---because 
-that is where construction is cheapest---and the remaining verification effort 
+Verification collapses exactly where the representation is strongest - 
+because that is where construction is cheapest - and the remaining 
+verification effort 
 is pushed to the margins, where work still feels hard. 
 In other words: the better our representations become, the more our epistemic 
 posture becomes skewed toward the regions those representations make comfortable.
 
 The predictable consequence is not that obvious claims are false. 
 The consequence is a characteristic error geometry. 
-Average performance improves---often dramatically---while vulnerabilities concentrate 
+Average performance improves - often dramatically - while vulnerabilities 
+concentrate 
 in the corners the representation does not compress: rare regimes, boundary cases, 
 adversarial inputs, and sparse structure. 
 These regions are not merely neglected; they become systematically invisible, 
@@ -94,7 +98,8 @@ Credit disputes and certain kinds of scientific cynicism are downstream of the
 same structural fact: fluency leaks backward in time. 
 This retrospective misattribution is so pervasive that it even governs the 
 naming of the toolkits themselves, as observed in \textit{Stigler's Law of Eponymy} \cite{stigler1980stigler}.
-As Polanyi noted, a mastered toolkit becomes part of our \textit{tacit dimension}---we 
+As Polanyi noted, a mastered toolkit becomes part of our \textit{tacit 
+dimension} - we 
 attend \textit{from} it \textit{to} the task, making the toolkit itself, and its 
 inherent biases, invisible \cite{polanyi1966tacit}.
 
@@ -108,10 +113,11 @@ Following Ohlsson's (1992) theory of \textit{representational change}, insight
 is not a search for answers but a restructuring of the problem space itself \cite{ohlsson1992information}. 
 After such a compression step, agents do not retain a sense of the cost of the 
 step itself. 
-They treat the low-cost state of the proposition---cheap given the new 
-representation---as if it were a property of the proposition in any representation, 
+They treat the low-cost state of the proposition - cheap given the new 
+representation - as if it were a property of the proposition in any 
+representation, 
 or even as if it had always been cheap. 
-This is what Ash et al. (2012) call the ``hindsight of insight'': the 
+This is what has been termed the ``hindsight of insight'': the 
 retrospective invisibility of the preceding impasse \cite{ash2012hindsight}.
 This shift is further exacerbated by \textit{response-shift bias}, where the 
 very adoption of a superior representation erases the previous baseline of 
@@ -124,8 +130,9 @@ This motivates the principle we will formalise:
 \textbf{Principle of Obviousness (Informal):} \textit{The mistake is not simply 
 overconfidence after learning. It is a bookkeeping failure about representations. 
 When a new representation compresses a problem so that a proposition $P$ becomes 
-cheap to construct---shifting it from a high-cost state $C_{R_0}(P)$ in the old 
-representation to a low-cost state $C_{R_1}(P)$ in the new one---observers fail 
+cheap to construct - shifting it from a high-cost state $C_{R_0}(P)$ in the 
+old representation to a low-cost state $C_{R_1}(P)$ in the new one - 
+observers fail 
 to track the cost of that representational work. They misclassify the result as 
 trivial, erasing the very compression that made it obvious.}
 
@@ -143,15 +150,14 @@ In the next section, we turn this into a model.
 We define a representational cost $C_{cons}(P|R)$ for constructing $P$ within a 
 representation $R$, and we treat representational progress as a cost-lowering 
 transformation $R_0 \to R_1$ that induces $C_{R_0}(P) \to C_{R_1}(P)$. 
-transformation $R_0 \to R_1$ that induces $C_{R_0}(P) \to C_{R_1}(P)$. 
 We then make the bookkeeping failure operational by introducing an ``obviousness 
 signal'' derived from the reduced cost, and by modelling how bounded agents 
 allocate verification effort as a function of that signal under a finite budget. 
 This yields a concrete prediction: representation compression (driven by 
 \textit{compressive pressure} $\alpha$) simultaneously 
 increases average competence while shifting uncorrected error toward the regions 
-the representation does not compress---exceptions, tails, boundary regimes, 
-and sparse structure.
+the representation does not compress - exceptions, tails, boundary regimes, 
+and sparse structure. We demonstrate this error geometry in three settings: a discrete classification task with rare exceptions (Sparse Parity), a continuous approximation problem with boundary anomalies (Runge's Boundary Divergence), and a feature-selection task under distribution shift (Shortcut Selection).
 
 \section{METHODS: THE GEOMETRY OF RATIONAL BLINDNESS}
 \label{sec:methods}
@@ -175,11 +181,29 @@ $O_R(P)$ is the subjective signal of its objective construction cost:
 \begin{equation}
     O_R(P) \equiv \frac{1}{C_{cons}(P | R)}
 \end{equation}
-The signal $O_R(P)$ provides the agent with a heuristic proxy for the 
-reliability of $P$ without necessitating full verification. Following the 
-logic of rational inattention \cite{sims2003implications}, a bounded agent 
-must allocate a finite verification budget $V_{total}$ across a set of 
-processed claims.
+where $C_{cons}(P|R)$ is the computational or metabolic effort required to 
+derive or instantiate $P$ given the primitives of $R$. This construction 
+cost is distinct from the \textit{verification cost} $v(P)$ - the effort 
+required to check $P$ against ground truth. The signal $O_R(P)$ provides the agent with a heuristic proxy for the reliability of $P$ without necessitating full verification. Following the logic of rational inattention \cite{sims2003implications}, a bounded agent must allocate a finite verification budget $V_{total}$ across a set of processed claims. The next subsection shows how low construction cost (high obviousness) drives reduced verification effort.
+
+\paragraph{Operational Proxies for Construction Cost}
+While $C_{cons}$ is theoretically grounded in Kolmogorov complexity, we 
+operationalize it domain-specifically in our simulations:
+\begin{itemize}
+    \item \textbf{Decision Trees (Sparse Parity)}: $C_{cons}(P|R) \propto$ 
+    incremental tree complexity to represent exception $P$ (additional 
+    splits or depth required beyond baseline)
+    
+    \item \textbf{Polynomial Approximation (Runge)}: $C_{cons}(P|R) \propto$ 
+    minimal polynomial degree required to approximate $P$ within tolerance 
+    $\varepsilon$
+    
+    \item \textbf{Feature Selection (Shortcut)}: $C_{cons}(P|R) \propto$ 
+    weighted feature count ($|w_i| \times \text{signal}_i$ for features 
+    needed to represent $P$)
+\end{itemize}
+These are computable proxies that capture ``representational effort'' - 
+claims requiring fewer or simpler primitives have lower $C_{cons}$.
 
 \subsection{The Budget Rule and Epistemic Posture}
 To optimise the volume of claims processed under a total budget $V_{total}$, 
@@ -193,36 +217,67 @@ is mirrored in industrial verification and optimization pipelines, where the
 cost of formal checks often dwarfs the cost of construction 
 \cite{Efremov2018, Esmaeilzadeh2023}.
 
-Attention is pushed to the margins where work feels ``hard,'' 
+However, this produces a specific \textit{epistemic posture} where 
+verification collapses in exactly the regions where the representation is most 
+fluid. This diminishing verification budget is best understood as the shadow 
+of a prior expense. We do not simply ``get lazy''; we amortise effort into 
+structure. A representation is a structural investment: it is the thing that 
+turns a once-expensive proposition into a cheap one. The trap is that we do 
+not keep a ledger for that investment. After the compression step, the cost 
+vanishes from memory and from culture, and what was hard is rebranded as 
+inevitable. That is the cruelty: the more genuinely novel the 
+representational advance - the more it makes previously inaccessible 
+statements easy to check - the more it destroys the evidence of its own 
+value. Meanwhile, by using ease as a proxy for safety, we train ourselves to 
+stop looking precisely where looking has become pleasant, and we become 
+selectively blind to the inconsistencies that live outside the compressed 
+region. Attention is pushed to the margins where work feels ``hard,'' 
 leaving the uncompressed corners of the world systematically unverified.
 
-\subsection{Epiplexity as Representational Investment}
+\subsection{Epiplexity and the Compression of Structural Content}
 
-To ground the cost signal $C_{cons}$ in modern information theory, we invoke the 
-recently introduced concept of \textit{Epiplexity} \cite{finzi2026epiplexity}. 
-Classical measures like Kolmogorov complexity or Shannon entropy assume 
-observers with infinite computational capacity. By contrast, epiplexity 
-formalises the structural content that a \textit{computationally bounded 
-observer} can actually extract from data. 
+To ground our framework in modern information theory for bounded observers, we 
+connect to the recently introduced concept of \textit{Epiplexity} 
+\cite{finzi2026epiplexity}. Classical information measures (Shannon entropy, 
+Kolmogorov complexity) assume observers with unlimited computational capacity 
+and treat all information equally. Epiplexity instead distinguishes between 
+two types of content in data:
 
-Finzi et al. \cite{finzi2026epiplexity} provide a high-level decomposition of 
-the total information available to such an observer under a compute bound $T$:
-\begin{equation}
-    \mathcal{E}_T(D) = L(M) + H_T(D | M)
-\end{equation}
-where $L(M)$ is the length of the model or program (the representational 
-investment) and $H_T(D | M)$ is the \textit{time-bounded entropy} or residual 
-codelength---the portion of the data that remains unpredictable noise to that 
-specific observer. 
+\begin{itemize}
+    \item \textbf{Structural content} (epiplexity): Learnable patterns and 
+    emergent structures that a computationally bounded observer can extract 
+    and reuse for generalization
+    
+    \item \textbf{Time-bounded entropy}: Random, unpredictable content that 
+    remains incompressible to the bounded observer (e.g., pseudorandom noise, 
+    chaotic dynamics)
+\end{itemize}
 
-In our framework, we identify $C_{cons}(P|R)$ as the local, 
-representation-conditioned construction cost experienced by the agent. 
-Representational progress $R_0 \to R_1$ is an investment that increases the 
-extractable structure $L(M)$ for the observer, effectively moving information 
-mass from the residual $H_T$ into the model $M$. This shift lowers the marginal 
-cost $C_{cons}$ for a structured subset of claims $\mathcal{P}_{fluent} \subset \mathcal{P}$, 
-making them feel ``obvious.''
+Epiplexity quantifies the length of the shortest program that captures the 
+structural content under computational constraints, while time-bounded entropy 
+measures the residual unpredictability.
 
+\paragraph{Connection to Our Framework}
+In our framework, representational progress $R_0 \to R_1$ is precisely the 
+process of \textit{extracting structural content} from what was previously 
+unpredictable. A representation $R$ is a compression that makes certain 
+patterns learnable - it shifts content from time-bounded entropy into 
+structural form. This creates two classes of claims:
+
+\begin{itemize}
+    \item \textbf{Compressed claims} $\mathcal{P}_{fluent}$: Those whose 
+    structure has been extracted by $R$, making them cheap to construct 
+    (low $C_{cons}$, high obviousness)
+    
+    \item \textbf{Uncompressed tail} $\mathcal{E}$: Claims whose structure 
+    remains unextracted, requiring high construction cost despite the 
+    representation
+\end{itemize}
+
+The Obviousness Trap arises because agents treat low construction cost 
+(extracted structure) as evidence of reliability, allocating verification 
+effort away from the compressed bulk. The tail $\mathcal{E}$ - where structure 
+remains unextracted - becomes systematically unverified.
 The ledger for this investment is up-front: paying for the toolkit, the basis, 
 or the program bits. Once these bits are paid, the per-claim construction cost 
 drops. The \textit{Obviousness Trap} is a structural bookkeeping failure: by 
@@ -284,6 +339,33 @@ $\alpha$ increases, we predict that the agent will achieve high average
 accuracy by ignoring the complex tail, leading to a sharp rise in $F$ even 
 as the majority of cases feel increasingly ``obvious.''
 
+\paragraph{Formal Definition of the Tail}
+We distinguish two notions of ``tail'':
+
+\textbf{Ex ante tail} $\mathcal{E}_{gen}$: A subset specified by the 
+environment or data-generating process (rare condition, boundary region, 
+shifted distribution). This is defined \textit{before observing errors}. 
+In our simulations:
+\begin{itemize}
+    \item Sparse Parity: $\mathcal{E}_{gen} = \{x : x_{N-1} = 1\}$ 
+    (exception condition)
+    \item Runge: $\mathcal{E}_{gen} = \{x : |x - 0.98| < 0.05\}$ 
+    (boundary spike region)
+    \item Shortcut: $\mathcal{E}_{gen} = D_{shift}$ 
+    (shifted test distribution)
+\end{itemize}
+
+\textbf{Representational tail} $\mathcal{E}_{rep}$: A subset for which the 
+representation update provides bounded cost reduction: 
+$C_{cons}(P|R_1) - C_{cons}(P|R_0) \leq \delta$, where $\delta$ is a 
+threshold (e.g., 10\% of mean cost drop across all claims). These are claims 
+that remain ``uncompressed'' by the new representation.
+
+Our simulations test the hypothesis: $\mathcal{E}_{gen} \approx 
+\mathcal{E}_{rep}$. That is, do generator-defined tails coincide with 
+representation-defined tails? This prediction is testable and non-circular: 
+both tail sets are defined independently of error outcomes.
+
 \subsection{Runge's Boundary Divergence}
 To verify the universality of the Obviousness Trap, we extend the model to 
 a continuous domain $x \in [0, 1]$. The task is to approximate a target 
@@ -298,7 +380,7 @@ equispaced nodes can lead to severe oscillations at the edges of the interval,
 even when the underlying function is smooth. In modern numerical analysis, 
 this divergence is understood as a fundamental trade-off between the degree of 
 global smoothness (fluency) and the ability to capture local perturbations 
-\cite{epperson1987runge}. we use polynomial regression where the degree $d$ 
+\cite{epperson1987runge}. We use polynomial regression where the degree $d$ 
 serves as the \textit{analogue} of representational expressivity. In this 
 setting, a smooth, low-degree prior ($d \approx 1$) represents an ``obvious'' 
 truth that compresses the bulk of the data perfectly but is structurally 
@@ -355,10 +437,31 @@ distribution shift. Collectively, these results reveal that when obviousness
 is used as a proxy for safety, the unverified margin becomes the natural 
 hiding place of error.
 
+
+Under monotone ``obviousness $\to$ reduced verification'' policies, 
+representational compression produces an error geometry in which bulk error 
+decreases while tail-conditioned error (error restricted to $\mathcal{E}$) 
+increases. This prediction is testable: if compression does not relocate 
+error to the tail set, the theory fails.
+
 \section{Results: The Hiding Place of Error}
 
 Our simulations confirm that the manufacturing of obviousness leads to a 
-specific error geometry.
+specific error geometry. Three clarifications before presenting results. First, this is not a claim 
+that ``obvious implies false'' - the bulk predictions remain accurate. 
+Second, this does not require irrational agents: the mechanism arises under 
+scarcity and monotone heuristics. Third, this is not a claim that 
+representational progress universally worsens outcomes; rather, it relocates 
+error unless verification adapts alongside compression. Fourth, the mechanism 
+assumes construction fluency correlates with verification ease in the domain. 
+This holds in most natural and scientific domains (claims easy to state tend 
+to be easy to check) but fails in adversarial domains like cryptography, 
+where construction is cheap (hash computation) but verification is expensive 
+(preimage search). The trap occurs when agents mistakenly use construction 
+cost as a proxy for verification cost in domains where this correlation is 
+weak or absent. We claim it \textit{relocates} 
+error to the tail set $\mathcal{E}$ unless verification policy adapts to 
+compensate. The error does not vanish - it concentrates.
 
 \subsection{Rational Blindness in Decision Trees}
 As predicted, the Sparse Parity simulation reveals a sharp trade-off between 
@@ -471,64 +574,139 @@ representation is learned, fluency leaks backward
 \cite{fischhoff1975hindsight, ash2012hindsight}. We experience a claim as 
 ``obvious,'' misremember it as having been easy all along, and under-allocate 
 scrutiny precisely where the current framework runs smoothly. In machine 
-learning, the same geometry appears under different names---shortcut learning 
-\cite{geirhos2020shortcut}, underspecification \cite{d'amour2022underspecification}, 
-and brittle generalisation under shift---where models achieve high average 
+learning, the same geometry appears under different names - shortcut 
+learning \cite{geirhos2020shortcut}, underspecification 
+\cite{d'amour2022underspecification}, and brittle generalisation under 
+shift - where models achieve high average 
 performance by exploiting low-cost structure that evaluation fails to pressure-test. 
+Our contribution is to treat these as instances of a single mechanism: 
+representational compression lowers construction cost, and under a finite 
+budget \cite{sims2003implications}, that cheapness is converted into a 
+posture of diminished verification, pushing error into the uncompressed 
+tails.
 
-\subsection{Epiplexity and the Obviousness Trap}
+\paragraph{Disconfirmation Criterion}
+The mechanism would be falsified if increasing representational compression 
+(lowering bulk construction cost) did not systematically reduce verification 
+allocation in the bulk, or if tail-conditioned error failed to rise under 
+such reallocation. Our simulations confirm both predictions, but the theory 
+remains testable in other domains.
 
-Using the lens of epiplexity, we can restate the mechanism with formal 
-precision. The ``structural investment'' in a representation---the bits 
-dedicated to the model $L(M)$---is what manufactures fluency. By adopting a 
-more powerful program or basis, an agent increases the amount of extractable 
-structure. However, under finite verification budgets, that very fluency 
-becomes a stop-signal: the agent rationally (but fragiley) divests from verifying 
-what is cheap to construct. The result is a characteristic error geometry: 
-error is not eliminated, but relocated to the high-epiplexity tails where 
-the representation does not compress.
+\subsection{Structural investment and the erased ledger}
 
-This dynamic provides a clean handle on \textit{hallucination}. A 
-hallucination is not random noise; it is a low-cost internal object emitted 
-without paying the additional ``coupling cost'' of external verification. In a 
-generative model, coherent completions are cheap under the learned program $M$. 
-What is expensive is fidelity to the contingent, high-friction constraints of 
-the world. Under a budget rule that treats cheapness as a proxy for safety, 
-these expensive constraints are the first to be dropped. Hallucination is the 
-natural output of an obviousness engine run without a verification channel.
+The shrinking verification budget is not an independent behavioural quirk. It is 
+the downstream effect of structural investment in representation. When a field, 
+or an agent, builds a new representation, it is not merely adopting a different 
+vocabulary: it is reshaping the cost landscape. Propositions that previously sat 
+at a high construction cost $C_{R_0}(P)$ are moved into a low-cost regime 
+$C_{R_1}(P)$. This is productive novelty in its most concrete form - making 
+previously prohibitive checks routine.
+
+The cruelty is that this investment tends to erase its own evidence. Once 
+$C_{R_1}(P)$ is in place, the cost of the compression step drops out of the 
+ledger \cite{hasher1977frequency}. Cheapness is misattributed to the proposition 
+itself (``it was always obvious''), and the representational work that produced 
+the cheapness is reclassified as trivial or inevitable. This is not only a story 
+about credit \cite{merton1968matthew}. It is also the mechanism by which the 
+budget rule tightens: when the local experience of cheap traversal is treated 
+as a proxy for safety, scrutiny collapses where the representation is most fluent.
+
+\subsection{Construction cost and the standard toolkit}
+
+In practice, the trap is strengthened by what might be called the \textit{standard 
+toolkit effect}. Agents default to representations with negligible startup 
+cost - canonical bases, standard approximations, inherited intuitions - 
+because 
+these are precompiled by culture, libraries, and habit. The result is that 
+``obvious'' becomes synonymous with ``expressible in the toolkit.'' Discovering 
+the representation required to expose an anomaly, by contrast, is itself 
+expensive: it requires a search through representation space. Under scarcity, 
+that search is discounted, and the agent settles for the basis that makes the 
+bulk cheap, even if it makes the decisive exception effectively invisible.
+
+This is precisely what our simulations illustrate in different guises. In 
+Sparse Parity, compressive pressure makes the exception structure economically 
+irrational to represent; error concentrates on the rare set. In Runge's 
+Boundary Divergence, a smooth, low-degree representation is cheap and therefore 
+preferred, but it must smear or ignore a narrow spike; increasing degree 
+can recover local detail but also introduces global oscillatory artefacts without 
+targeted representational choice. In both cases, the mechanism is not 
+``poor learning,'' but cheap traversal driving reduced attention to what is 
+expensive to represent.
+
+\subsection{Connection to modern machine learning}
+
+Read as machine learning, the \textit{Obviousness Trap} is the structural analogue 
+of shortcut learning \cite{geirhos2020shortcut}. When a low-cost feature map 
+captures the bulk of the label signal in a training distribution, optimisation 
+will find it because it is cheap. What is expensive is the robust structure: 
+invariances that reveal themselves only under shift, in rare subpopulations, or 
+in adversarial regimes. Standard evaluation acts as a weak surrogate for 
+verification: it pressure-tests performance primarily on typical draws from the 
+training distribution. Under that regime, models become competent in the bulk 
+and fragile in the corners.
+
+The same geometry underlies underspecification \cite{d'amour2022underspecification}. 
+Many internal hypotheses are equally consistent with the bulk of data; the 
+evaluation environment fails to select among them; deployment reveals which 
+distinctions were never tested. From the present viewpoint, this is not a 
+separate pathology but a predictable consequence of treating representational 
+cheapness as a proxy for safety: the regions where the representation compresses 
+most efficiently become the regions where scrutiny is least informative and 
+least applied.
+
+\subsection{Hallucination as low-cost, non-verified structure}
+
+The framework also gives a clean handle on hallucination. A hallucination is 
+not best thought of as ``randomness,'' but as low-cost structure emitted 
+without the cost of coupling to an external constraint. In a generative model, 
+there is constant pressure to produce continuations that are cheap in the internal 
+representation: fluent, coherent, strongly supported by priors. Fluency is 
+exactly the cost signal identified by the theory. When external verification is 
+expensive or absent - no grounded retrieval, no cross-check, no coupling to 
+a second representation - cheap internal objects are emitted as if they 
+were safe.
+
+This explains why hallucinations are often well-formed. Coherence is cheap. 
+What is expensive is fidelity to the contingent, high-friction details of the 
+world. Under a budget rule that treats cheapness as a reason to stop checking, 
+the expensive constraints are the first to be dropped. Hallucination is then not 
+an anomaly of the model; it is the natural output of an obviousness engine 
+run without a verification channel.
 
 The \textit{mono-representation problem} follows as a consequence of single 
-program class dominance. When one representation defines what counts as 
-efficient, obviousness becomes self-certifying. Scrutiny is applied only 
-internally, as a check for self-consistency within the prevailing code. To 
-escape this, we propose the structural antidote of \textit{coupling inequivalent 
-representations}. By demanding \textit{mutual consistency} across structurally 
-distinct program classes, an agent can force scrutiny back into the precise 
-regions where any single compression would least like to pay it.
+program class dominance. A mono-representational regime is one in which a 
+single program class or representational framework dominates the 
+construction and verification of claims, making obviousness self-certifying 
+within that framework. When one representation defines what counts as 
+efficient, scrutiny is applied only internally, as a check for 
+self-consistency within the prevailing code. To escape this, we propose the 
+structural antidote of \textit{coupling inequivalent representations}. 
+Given two representations $R^{(1)}, R^{(2)}$, define a consistency penalty 
+$K(P) = \text{dist}(\tau_{12}(P), P)$ under translation $\tau_{12}$; 
+claims that are cheap in one lens but incur large $K$ are exactly the 
+``unverified margin.'' By demanding \textit{mutual consistency} across 
+structurally distinct program classes, an agent can force scrutiny back 
+into the precise regions where any single compression would least like to 
+pay it.
 
 As we move toward more autonomous and compressed AI systems, the central 
 challenge is no longer just the discovery of better models, but the 
 management of the representational ledger. What is the true cost of a 
-representation, where is it being paid---in compute, in data curation, in 
-cognitive load, or in social infrastructure---and what objective governed the 
+representation, where is it being paid - in compute, in data curation, in 
+cognitive load, or in social infrastructure - and what objective governed the 
 decision to buy that representation versus spending the equivalent effort on 
 ongoing verification? These are the questions that will determine whether our 
 intelligence becomes more capable, or simply more elegantly blind.
-
-\section{Conclusion: The Recursive Irony}
 
 We conclude with a warning. This paper itself offers a compact, efficient 
 representation of the problem of blindness. By defining 
 $O_R(P) = 1/C_{cons}$, we have manufactured fluency; we have made the intuition 
 ``obvious.''
 
-If you, the reader, feel that this conclusion is now trivial---that ``of course'' 
-efficiency implies fragility---then you have fallen into the very trap we 
-described. You have ceased to verify. Following Feyerabend's (1975) call for 
-epistemological pluralism \cite{feyerabend1975against}, the only rational 
-response to this paper is to doubt its coherence.
-
-Run.
+The central question remains: What is the true cost of a representation, where is it being paid - in compute, in data curation, in 
+cognitive load, or in social infrastructure - and what objective should 
+govern the decision to invest in new representational toolkits versus spending equivalent effort on ongoing verification? These are the questions that will determine whether our intelligence becomes more capable, or simply more elegantly blind.
 
 \bibliographystyle{apsrev4-2}
 \bibliography{../../literature/bibliography}
