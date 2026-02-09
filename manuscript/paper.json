@@ -1,0 +1,8 @@
+{
+  "title": "Hamiltonians of mean force",
+  "slug": "Hamiltonians_of_mean_force",
+  "main_tex": "manuscript/tex/main.tex",
+  "build_dir": "manuscript/build",
+  "sections_index": "manuscript/sections/index.tex",
+  "template": "revtex4-2"
+}

@@ -20,16 +20,7 @@ elseif ($Command -eq "sim-continuous") {
     & $PythonStr simulation/src/continuous_runner.py
 }
 elseif ($Command -eq "paper") {
-    Push-Location manuscript/tex
-    pdflatex -output-directory ../build main.tex
-    Pop-Location
-    Push-Location manuscript/build
-    bibtex main
-    Pop-Location
-    Push-Location manuscript/tex
-    pdflatex -output-directory ../build main.tex
-    pdflatex -output-directory ../build main.tex
-    Pop-Location
+    & $PythonStr utils/build_paper.py --paper manuscript/paper.json
 }
 elseif ($Command -eq "clean") {
     Remove-Item -Recurse -Force manuscript/build/*

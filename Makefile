@@ -7,10 +7,7 @@ install:
 	$(PIP) install -r requirements.txt
 
 paper:
-	cd manuscript/tex && pdflatex -output-directory ../build main.tex
-	cd manuscript/tex && bibtex ../build/main
-	cd manuscript/tex && pdflatex -output-directory ../build main.tex
-	cd manuscript/tex && pdflatex -output-directory ../build main.tex
+	$(PYTHON) utils/build_paper.py --paper manuscript/paper.json
 
 sim:
 	$(PYTHON) simulation/src/main.py

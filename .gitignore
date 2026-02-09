@@ -1,6 +1,8 @@
 # LaTeX Build Artifacts
 manuscript/build/
 manuscript/build_v2/
+manuscript/build_archive/
+manuscript/tex_build_archive/
 *.aux
 *.log
 *.out
